@@ -272,6 +272,33 @@ textarea.form-input {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* ── Library Search ── */
+.library-search {
+    isolation: isolate;
+}
+
+.library-search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+    transform: translateY(-50%) translateZ(0);
+    -webkit-transform: translateY(-50%) translateZ(0);
+    -webkit-font-smoothing: antialiased;
+}
+
+.library-search:focus-within .library-search-icon {
+    color: rgba(255, 255, 255, 1);
+}
+
+.library-search-input {
+    position: relative;
+    z-index: 1;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
 /* ── Modals ── */
 .modal-blur {
     backdrop-filter: blur(12px) brightness(0.7);
