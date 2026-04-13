@@ -96,6 +96,16 @@ textarea.form-input {
     resize: vertical;
 }
 
+/* Prevent iOS Safari from auto-zooming small form controls on focus. */
+@media (max-width: 767px) {
+    input.form-input,
+    select.form-input,
+    textarea.form-input,
+    input.library-search-input {
+        font-size: 16px;
+    }
+}
+
 /* ── Buttons ── */
 .btn-primary {
     background: var(--accent);
