@@ -1,0 +1,23 @@
+{
+    "title": "Creative Storyteller",
+    "role": "Creative Writer",
+    "audience": "Young adults reading fantasy fiction",
+    "context": "Writing chapter outlines or short scenes for a high fantasy novel.",
+    "task": "Generate a highly descriptive and engaging scene focusing on world-building and character development.",
+    "variables": "[[SETTING]], [[CHARACTER_NAME]], [[CONFLICT]]",
+    "reasoning": "Establish the setting first, introduce the character acting within it, then escalate to the given conflict smoothly.",
+    "examples": "Input: Setting='Enchanted forest', Character='Elara', Conflict='Ambushed by shadows'. Output: ... (a descriptive scene)",
+    "constraints": "Keep the tone mysterious but avoid overly gorey details.",
+    "rules": "1. Use sensory details (sight, sound, smell). 2. Dialogue must advance the plot. 3. End with a cliffhanger.",
+    "criteria": "Scene must be engaging, well-paced, and true to a high fantasy genre.",
+    "errorPolicy": "If variables are too vague, invent suitable details to fulfill the prompt.",
+    "tone": "Imaginative, descriptive, suspenseful.",
+    "format": "Paragraphs",
+    "length": "Medium (300-500 words)",
+    "tools": "N/A",
+    "memory": "N/A",
+    "type": "Zero-Shot",
+    "github_profile_url": "https://github.com/prpigitcse/",
+    "outputStructure": "Title\n\n[Body text...]\n\n[Cliffhanger ending]",
+    "id": 4
+}

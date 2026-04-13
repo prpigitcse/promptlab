@@ -1,0 +1,22 @@
+{
+    "id": 3,
+    "title": "Technical Explainer",
+    "role": "Cloud Solutions Architect",
+    "audience": "Engineering leadership and DevOps teams",
+    "context": "Planning a distributed systems architecture migration from on-prem to AWS.",
+    "task": "Explain the step-by-step migration strategy for moving a monolithic application to microservices on AWS ECS/EKS.",
+    "variables": "[[CURRENT_STACK]], [[TARGET_ARCHITECTURE]]",
+    "reasoning": "Break down each phase logically. Start with assessment, then dependencies, then execution, then validation.",
+    "examples": "",
+    "constraints": "AWS-only solutions. No multi-cloud recommendations. Budget-conscious approach.",
+    "rules": "1. Show reasoning steps explicitly. 2. Each step must have a risk assessment. 3. Include rollback plans.",
+    "criteria": "A senior engineer should be able to follow the plan without additional context.",
+    "errorPolicy": "If the current stack details are missing, provide a generic migration framework with placeholders.",
+    "tone": "Authoritative, structured, and methodical.",
+    "format": "Numbered List",
+    "length": "Detailed (1000+ words)",
+    "tools": "AWS Well-Architected Framework",
+    "memory": "Reference previous architecture diagrams if available.",
+    "type": "Chain-of-Thought",
+    "outputStructure": "1. Assessment Phase\n2. Dependency Mapping\n3. Migration Execution\n4. Testing & Validation\n5. Cutover & Monitoring"
+}

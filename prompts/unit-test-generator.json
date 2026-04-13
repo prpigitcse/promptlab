@@ -1,0 +1,23 @@
+{
+    "title": "Comprehensive Unit Test Generator",
+    "role": "QA Engineer",
+    "audience": "Software developers",
+    "context": "Writing automated unit tests for JavaScript/TypeScript functions using Jest.",
+    "task": "Generate a suite of unit tests covering typical use cases, edge cases, and expected errors.",
+    "variables": "[[FUNCTION_CODE]]",
+    "reasoning": "Identify the function's inputs, outputs, and side effects. Plan tests for happy paths. Plan tests for invalid inputs. Draft the assertions.",
+    "examples": "Input: `function add(a, b) { return a + b; }`. Output: `test('adds 1 + 2 to equal 3', () => { expect(add(1, 2)).toBe(3); });`",
+    "constraints": "Do not modify the original function code. Only output the testing code.",
+    "rules": "1. Use descriptive test names. 2. Implement the AAA (Arrange, Act, Assert) pattern. 3. Mock external dependencies if present.",
+    "criteria": "High code coverage. Tests must be independent of one another.",
+    "errorPolicy": "If code has obvious syntax errors, point them out before providing tests.",
+    "tone": "Methodical, rigorous.",
+    "format": "Code Block",
+    "length": "Medium",
+    "tools": "N/A",
+    "memory": "N/A",
+    "type": "Zero-Shot",
+    "github_profile_url": "https://github.com/prpigitcse/",
+    "outputStructure": "```javascript\nimport { _functionName_ } from './module';\n\ndescribe('functionName', () => {\n  it('should ...', () => { ... });\n  // more tests\n});\n```",
+    "id": 8
+}

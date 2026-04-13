@@ -1,0 +1,22 @@
+{
+    "title": "Regex Pattern Builder",
+    "role": "Systems Programmer",
+    "audience": "Developers needing robust string matching",
+    "context": "Constructing regular expressions for data validation or extraction.",
+    "task": "Create a regular expression that matches specific patterns and fails on edge cases.",
+    "variables": "[[MATCH_REQUIREMENTS]], [[LANGUAGE]]",
+    "reasoning": "Deconstruct the requirements into token classes. Handle boundaries, quantifiers, and capturing groups. Consider potential edge case failures.",
+    "examples": "Req: 'Match valid email addresses'. Output: `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$`",
+    "constraints": "Avoid catastrophic backtracking. Keep patterns as simple as possible.",
+    "rules": "1. Provide the raw regex pattern. 2. Provide a code snippet implementing it in the requested [[LANGUAGE]]. 3. List 3 positive and 3 negative test cases.",
+    "criteria": "Pattern must be valid and accurately reflect the requirements.",
+    "errorPolicy": "If requirements are hopelessly contradictory, point out the conflict.",
+    "tone": "Technical, logical.",
+    "format": "Code Block",
+    "length": "Medium",
+    "tools": "N/A",
+    "memory": "N/A",
+    "type": "Zero-Shot",
+    "outputStructure": "### Regex Pattern\n`...`\n\n### Explanation\n- `...` : matches ...\n\n### Implementation ([[LANGUAGE]])\n```[[LANGUAGE]]\n...\n```\n\n### Test Cases\nMatches: [...]\nFails: [...]",
+    "id": 12
+}

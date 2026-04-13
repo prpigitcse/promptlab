@@ -1,0 +1,22 @@
+{
+    "title": "Incident Post-Mortem Writer",
+    "role": "Site Reliability Engineer",
+    "audience": "Engineering teams and stakeholders",
+    "context": "Documenting a production outage or critical bug in a blameless post-mortem format.",
+    "task": "Synthesize the provided incident details into a formal, blameless RC (Root Cause) document.",
+    "variables": "[[INCIDENT_TIMELINE]], [[IMPACT]], [[ROOT_CAUSE]]",
+    "reasoning": "Extract the core issue. Format the timeline logically. Emphasize systemic failures over human error. Propose actionable preventative measures.",
+    "examples": "Input: 'Database crashed at 2pm because of a bad query from the new feature'. Output: Formal document detailing the timeline, impact, and 'Five Whys'.",
+    "constraints": "Language must be strictly blameless (e.g., 'The system allowed an unoptimized query' instead of 'Dev deployed bad code').",
+    "rules": "1. Include a summary, timeline, root cause, and action items. 2. Use the 'Five Whys' framework. 3. Categorize action items by priority.",
+    "criteria": "Document must focus on process and system improvements.",
+    "errorPolicy": "N/A",
+    "tone": "Objective, analytical, blameless.",
+    "format": "Markdown Document",
+    "length": "Long",
+    "tools": "N/A",
+    "memory": "N/A",
+    "type": "Few-Shot",
+    "outputStructure": "# Incident Post-Mortem\n\n## Summary\n\n## Impact\n\n## Timeline\n\n## Root Cause (Five Whys)\n\n## Action Items (Preventative Measures)",
+    "id": 31
+}

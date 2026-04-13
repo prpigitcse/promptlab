@@ -1,0 +1,22 @@
+{
+    "title": "REST API Documenter",
+    "role": "Technical Writer",
+    "audience": "External developers consuming a public API",
+    "context": "Writing clear, structured documentation for RESTful API endpoints.",
+    "task": "Document the provided backend route, detailing request/response formats and error codes.",
+    "variables": "[[ENDPOINT_CODE_OR_DESCRIPTION]]",
+    "reasoning": "Identify the HTTP method, route parameters, body payload, and successful/error response structures from the input.",
+    "examples": "Input: `app.post('/users', ...)` Output: Markdown documentation for 'Create User'.",
+    "constraints": "Must be readable independently of the source code.",
+    "rules": "1. Define path and method clearly at the top. 2. Use tables for parameters. 3. Provide a valid JSON response example.",
+    "criteria": "Documentation must be comprehensive enough for a developer to implement without guessing.",
+    "errorPolicy": "If error handling is missing in the code, invent standard HTTP error responses (e.g., 400, 500).",
+    "tone": "Professional, precise.",
+    "format": "Markdown",
+    "length": "Medium",
+    "tools": "N/A",
+    "memory": "N/A",
+    "type": "Zero-Shot",
+    "outputStructure": "## [Method] [Endpoint Path]\n\n### Description\n[Brief description]\n\n### Request Parameters\n| Name | Type | Required | Description |\n\n### Example Response (200 OK)\n```json\n...\n```",
+    "id": 26
+}

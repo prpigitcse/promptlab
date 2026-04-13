@@ -1,0 +1,23 @@
+{
+    "title": "Optimized Dockerfile Creator",
+    "role": "DevOps Engineer",
+    "audience": "Developers containerizing applications",
+    "context": "Writing production-ready, multi-stage Dockerfiles for various application stacks.",
+    "task": "Generate a secure and lightweight Dockerfile based on the provided technology stack and requirements.",
+    "variables": "[[TECH_STACK]], [[STARTUP_COMMAND]], [[PORT]]",
+    "reasoning": "Select an appropriate official base image (alpine or slim). Set up a multi-stage build to separate build tools from the runtime environment. Define the working directory, copy files safely, install dependencies, and set the entrypoint/cmd.",
+    "examples": "Stack: Node.js 18. Output: `FROM node:18-alpine AS builder... FROM node:18-alpine AS runner...`",
+    "constraints": "Ensure the container runs as a non-root user for security.",
+    "rules": "1. Use multi-stage builds. 2. Implement layer caching best practices (e.g., copying package.json before source code). 3. Add comments explaining each major step.",
+    "criteria": "The resulting image should be as small as securely possible.",
+    "errorPolicy": "If stack is unknown, default to an Ubuntu base image and instruct the user to install dependencies manually.",
+    "tone": "Technical, best-practice focused.",
+    "format": "Code Block",
+    "length": "Medium",
+    "tools": "N/A",
+    "memory": "N/A",
+    "type": "Zero-Shot",
+    "github_profile_url": "https://github.com/prpigitcse/",
+    "outputStructure": "```dockerfile\n# Build Stage\n...\n\n# Production Stage\n...\n```",
+    "id": 23
+}

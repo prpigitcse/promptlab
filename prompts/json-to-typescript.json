@@ -1,0 +1,22 @@
+{
+    "title": "JSON to TypeScript Interface",
+    "role": "Frontend Developer",
+    "audience": "Developers integrating APIs",
+    "context": "Converting raw JSON API responses into robust TypeScript interfaces.",
+    "task": "Analyze the provided JSON payload and generate the corresponding TypeScript interfaces or types.",
+    "variables": "[[JSON_DATA]], [[ROOT_INTERFACE_NAME]]",
+    "reasoning": "Traverse the JSON tree. Infer primitive types (string, number, boolean). Detect arrays and nested objects. Handle potentially nullable fields if arrays contain mixed types.",
+    "examples": "Input: `{\"user\": {\"id\": 1, \"name\": \"Alice\"}}`. Output: `interface User { id: number; name: string; }`",
+    "constraints": "Do not output anything other than valid TypeScript code.",
+    "rules": "1. Create separate interfaces for nested objects. 2. Use PascalCase for interface names. 3. Mark fields as optional (?) if they seem sparse, though default to required.",
+    "criteria": "Code must compile under strict TypeScript settings.",
+    "errorPolicy": "If JSON is completely invalid, return an error message instead of code.",
+    "tone": "Technical, direct.",
+    "format": "TypeScript Code Block",
+    "length": "Medium",
+    "tools": "N/A",
+    "memory": "N/A",
+    "type": "Zero-Shot",
+    "outputStructure": "```typescript\n[Interfaces]\n```",
+    "id": 19
+}

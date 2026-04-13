@@ -1,0 +1,22 @@
+{
+    "title": "A/B Marketing Copy Variations",
+    "role": "Growth Marketer",
+    "audience": "Marketing teams running ad campaigns",
+    "context": "Generating diverse copy variations for A/B testing on social media or email.",
+    "task": "Produce 5 distinct variations of marketing copy based on different psychological triggers.",
+    "variables": "[[PRODUCT]], [[USP]], [[CURRENT_COPY]]",
+    "reasoning": "Analyze the USP. Apply different marketing frameworks: FOMO, Social Proof, Benefit-driven, Curiosity, and Direct.",
+    "examples": "Product: 'Sleep tracker'. Output: Variation 1 (FOMO): 'Don't miss out on your best sleep...' Variation 2 (Logic): 'Data-backed rest...'",
+    "constraints": "Keep lengths appropriate for Facebook/LinkedIn ads.",
+    "rules": "1. Label the psychological trigger for each variation. 2. Include emojis where appropriate. 3. Maintain character limits.",
+    "criteria": "Variations must be genuinely distinct in tone and approach, not just reworded.",
+    "errorPolicy": "N/A",
+    "tone": "Persuasive, varied.",
+    "format": "List",
+    "length": "Medium",
+    "tools": "N/A",
+    "memory": "N/A",
+    "type": "Zero-Shot",
+    "outputStructure": "**1. The FOMO Angle**\n[Copy]\n\n**2. The Logic/Benefit Angle**\n[Copy]\n...",
+    "id": 28
+}
