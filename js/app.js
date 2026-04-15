@@ -58,6 +58,46 @@ $(document).ready(function () {
 
   $("#formatSelect").on("change", syncFormatUI);
   $("#customFormatInput").on("input", syncFormatUI);
+  $("#navGenerator, #navLibrary").on("click", function () {
+    switchPage($(this).data("page"));
+  });
+  $("#confirmClearBtn").on("click", function () {
+    confirmClear();
+  });
+  $("#downloadBtn").on("click", function () {
+    downloadPrompt();
+  });
+  $("#copyBtn").on("click", function () {
+    copyToClipboard();
+  });
+  $("#cancelClearBtn").on("click", function () {
+    closeModal("confirmModal");
+  });
+  $("#clearAllBtn").on("click", function () {
+    executeClear();
+  });
+  $("#modalOverlay").on("click", function () {
+    closeModal("modalOverlay");
+  });
+  $("#modalContentWrapper").on("click", function (event) {
+    event.stopPropagation();
+  });
+  $("#modalCloseBtn, #modalCloseSecondaryBtn").on("click", function () {
+    closeModal("modalOverlay");
+  });
+  $("#libraryGrid").on(
+    "click",
+    ".card-template[data-template-id]",
+    function () {
+      viewTemplate(Number($(this).data("template-id")));
+    },
+  );
+  $("#libraryGrid").on("click", ".author-link", function (event) {
+    event.stopPropagation();
+  });
+  $("#paginationControls").on("click", "button[data-page]", function () {
+    goToPage(Number($(this).data("page")));
+  });
 
   syncFormatUI();
   scheduleHarperWarmup();
@@ -1135,8 +1175,7 @@ function renderLibrary() {
         .split("/")
         .pop();
       authorHtml = `<a href="${template.github_profile_url}" target="_blank" rel="noopener noreferrer"
-                            class="flex items-center gap-1.5 text-[10px] font-semibold text-muted hover:text-accent transition-colors"
-                            onclick="event.stopPropagation()">
+                            class="author-link flex items-center gap-1.5 text-[10px] font-semibold text-muted hover:text-accent transition-colors">
                             <i class="fab fa-github text-xs"></i>${username}
                           </a>`;
     } else {
@@ -1146,7 +1185,7 @@ function renderLibrary() {
     }
 
     const card = `
-            <div class="glass-panel p-6 card-template flex flex-col justify-between" onclick="viewTemplate(${template.id})">
+            <div class="glass-panel p-6 card-template flex flex-col justify-between" data-template-id="${template.id}">
                 <div>
                     <div class="flex justify-between items-start mb-6">
                         <span class="text-[10px] font-bold uppercase px-3 py-1 rounded bg-black/5 text-muted tracking-widest">
@@ -1190,7 +1229,7 @@ function renderPagination(totalPages, container, totalItems) {
   let html = `<span class="text-[11px] font-semibold text-zinc-500 mr-4">${startItem}–${endItem} of ${totalItems}</span>`;
 
   // Previous button
-  html += `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? "disabled" : ""}
+  html += `<button data-page="${currentPage - 1}" ${currentPage === 1 ? "disabled" : ""}
         class="w-9 h-9 flex items-center justify-center rounded-lg text-xs font-bold transition-all
         ${
           currentPage === 1
@@ -1219,7 +1258,7 @@ function renderPagination(totalPages, container, totalItems) {
       html += `<span class="w-9 h-9 flex items-center justify-center text-zinc-400 text-xs font-bold">…</span>`;
     } else {
       const isActive = p === currentPage;
-      html += `<button onclick="goToPage(${p})"
+      html += `<button data-page="${p}"
                 class="w-9 h-9 flex items-center justify-center rounded-lg text-xs font-bold transition-all
                 ${
                   isActive
@@ -1232,7 +1271,7 @@ function renderPagination(totalPages, container, totalItems) {
   });
 
   // Next button
-  html += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? "disabled" : ""}
+  html += `<button data-page="${currentPage + 1}" ${currentPage === totalPages ? "disabled" : ""}
         class="w-9 h-9 flex items-center justify-center rounded-lg text-xs font-bold transition-all
         ${
           currentPage === totalPages

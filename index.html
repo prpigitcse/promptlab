@@ -80,7 +80,7 @@
     <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css" />
 
     <!-- App: Custom Styles -->
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.min.css" />
   </head>
 
   <body class="p-4 md:p-8">
@@ -108,13 +108,17 @@
           class="flex items-center gap-1 bg-black/10 p-1 rounded-lg border border-white/10 backdrop-blur-md"
         >
           <button
-            onclick="switchPage('generator')"
+            id="navGenerator"
+            type="button"
+            data-page="generator"
             class="nav-link active px-5 py-1.5 text-xs font-semibold rounded-md"
           >
             Generator
           </button>
           <button
-            onclick="switchPage('library')"
+            id="navLibrary"
+            type="button"
+            data-page="library"
             class="nav-link px-5 py-1.5 text-xs font-semibold rounded-md text-white/70 hover:text-white hover:bg-white/10"
           >
             Library
@@ -591,8 +595,8 @@
                     class="pt-6 flex items-center justify-between border-t border-black/5"
                   >
                     <button
+                      id="confirmClearBtn"
                       type="button"
-                      onclick="confirmClear()"
                       class="text-[11px] font-bold text-red-500 hover:text-red-600 transition-colors uppercase tracking-[0.15em] flex items-center gap-2"
                     >
                       <i class="fas fa-trash-alt"></i> Reset Workspace
@@ -619,16 +623,16 @@
                   </h2>
                   <div class="flex gap-3">
                     <button
-                      onclick="downloadPrompt()"
                       id="downloadBtn"
+                      type="button"
                       class="w-10 h-10 flex items-center justify-center rounded-full bg-accent-bg text-accent hover:bg-accent hover:text-white transition-all hidden"
                       title="Download Markdown"
                     >
                       <i class="fas fa-download text-sm"></i>
                     </button>
                     <button
-                      onclick="copyToClipboard()"
                       id="copyBtn"
+                      type="button"
                       class="w-10 h-10 flex items-center justify-center rounded-full bg-accent-bg text-accent hover:bg-accent hover:text-white transition-all hidden"
                       title="Copy to Clipboard"
                     >
@@ -805,13 +809,15 @@
         </div>
         <div class="p-5 bg-black/[0.03] border-t border-black/5 flex gap-4">
           <button
-            onclick="closeModal('confirmModal')"
+            id="cancelClearBtn"
+            type="button"
             class="flex-1 px-4 py-3 text-xs font-bold rounded-xl hover:bg-white transition-all uppercase tracking-widest"
           >
             Cancel
           </button>
           <button
-            onclick="executeClear()"
+            id="clearAllBtn"
+            type="button"
             class="flex-1 px-4 py-3 text-xs font-bold bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all uppercase tracking-widest shadow-lg shadow-red-500/30"
           >
             Clear All
@@ -823,11 +829,10 @@
     <div
       id="modalOverlay"
       class="fixed inset-0 bg-black/60 modal-blur z-50 hidden items-center justify-center p-2 sm:p-4"
-      onclick="closeModal('modalOverlay')"
     >
       <div
+        id="modalContentWrapper"
         class="glass-panel bg-white w-full max-w-2xl overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,0.4)] animate-in fade-in zoom-in-95 duration-200 border-white max-h-[95vh] sm:max-h-[90vh] flex flex-col rounded-xl"
-        onclick="event.stopPropagation()"
       >
         <div
           class="p-4 sm:p-6 border-b border-black/5 flex justify-between items-center bg-black/[0.02] flex-shrink-0"
@@ -843,7 +848,8 @@
             ></h3>
           </div>
           <button
-            onclick="closeModal('modalOverlay')"
+            id="modalCloseBtn"
+            type="button"
             class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 transition-all flex-shrink-0"
           >
             <i class="fas fa-times text-muted"></i>
@@ -857,13 +863,15 @@
           class="p-4 sm:p-6 border-t border-black/5 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 bg-black/[0.02] flex-shrink-0"
         >
           <button
-            onclick="closeModal('modalOverlay')"
+            id="modalCloseSecondaryBtn"
+            type="button"
             class="px-6 py-3 text-xs font-bold rounded-xl hover:bg-white transition-all uppercase tracking-widest order-2 sm:order-1"
           >
             Close
           </button>
           <button
             id="modalUseBtn"
+            type="button"
             class="btn-primary py-3 px-8 text-xs uppercase tracking-widest order-1 sm:order-2"
           >
             Deploy Template
@@ -873,6 +881,6 @@
     </div>
 
     <!-- App: Main Script -->
-    <script src="js/app.js"></script>
+    <script src="js/app.min.js"></script>
   </body>
 </html>

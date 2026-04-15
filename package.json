@@ -5,9 +5,14 @@
   "main": "index.html",
   "scripts": {
     "start": "serve .",
-    "dev": "live-server --port=3000 --open=index.html"
+    "dev": "live-server --port=3000 --open=index.html",
+    "build": "esbuild js/app.js --bundle --minify --outfile=js/app.min.js && esbuild css/style.css --minify --outfile=css/style.min.css"
   },
-  "keywords": ["prompt-engineering", "llm", "templates"],
+  "keywords": [
+    "prompt-engineering",
+    "llm",
+    "templates"
+  ],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.33.0",
@@ -17,6 +22,7 @@
     "serve": "^14.2.4"
   },
   "devDependencies": {
+    "esbuild": "^0.19.0",
     "live-server": "^1.2.2"
   }
 }
