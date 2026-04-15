@@ -135,43 +135,91 @@ textarea.form-input {
   box-shadow: 0 6px 20px rgba(109, 40, 217, 0.5);
 }
 
-/* ── Orbiting Flask Animation ── */
+/* ── Lightbulb Icon — Enterprise Animated ── */
 .orbiting-flask {
   position: relative;
+  --bulb-gold: #f59e0b;
+  --bulb-amber: #fbbf24;
+  --bulb-warm: #f97316;
+  --bulb-glow: rgba(251, 191, 36, 0.35);
 }
 
+/* Soft radial backdrop glow */
+.orbiting-flask::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--bulb-glow) 0%, transparent 70%);
+  animation: bulb-breathe 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Primary orbiting ring — slow, tilted */
 .orbiting-flask::after {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 50px;
-  height: 50px;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    #e74c3c 0deg,
-    #e74c3c 120deg,
-    transparent 120deg
-  );
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  transform: translate(-50%, -50%);
-  animation: rotate-arc 3s linear infinite;
-  opacity: 0.8;
+  border: 1.5px solid transparent;
+  border-top-color: var(--bulb-amber);
+  border-right-color: rgba(251, 191, 36, 0.3);
+  transform: translate(-50%, -50%) rotateX(60deg) rotateZ(0deg);
+  animation: orbit-ring-1 4s linear infinite;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 1;
+  filter: drop-shadow(0 0 3px var(--bulb-glow));
 }
 
-@keyframes rotate-arc {
+/* The icon itself */
+.eye-catching-flask {
+  position: relative;
+  z-index: 3;
+  color: var(--bulb-amber, #fbbf24);
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.7))
+    drop-shadow(0 0 18px rgba(245, 158, 11, 0.35));
+  animation: bulb-icon-pulse 3s ease-in-out infinite;
+}
+
+/* ── Keyframes ── */
+@keyframes orbit-ring-1 {
   0% {
-    transform: translate(-50%, -50%) rotate(0deg);
+    transform: translate(-50%, -50%) rotateX(60deg) rotateZ(0deg);
   }
   100% {
-    transform: translate(-50%, -50%) rotate(360deg);
+    transform: translate(-50%, -50%) rotateX(60deg) rotateZ(360deg);
   }
 }
 
-.eye-catching-flask {
-  color: #e74c3c;
-  filter: drop-shadow(0 0 15px rgba(231, 76, 60, 1)) brightness(1.2);
+@keyframes bulb-breathe {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes bulb-icon-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.7))
+      drop-shadow(0 0 18px rgba(245, 158, 11, 0.35));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.9))
+      drop-shadow(0 0 28px rgba(245, 158, 11, 0.5));
+    transform: scale(1.08);
+  }
 }
 
 /* ── Section Labels ── */
