@@ -1093,11 +1093,11 @@ function getFilteredTemplates() {
   if (!query) return promptTemplates;
   return promptTemplates.filter(
     (t) =>
-      t.title.toLowerCase().includes(query) ||
-      t.task.toLowerCase().includes(query) ||
-      t.role.toLowerCase().includes(query) ||
-      t.type.toLowerCase().includes(query) ||
-      t.format.toLowerCase().includes(query),
+      (t.title || "").toLowerCase().includes(query) ||
+      (t.task || "").toLowerCase().includes(query) ||
+      (t.role || "").toLowerCase().includes(query) ||
+      (t.type || "").toLowerCase().includes(query) ||
+      (t.format || "").toLowerCase().includes(query),
   );
 }
 

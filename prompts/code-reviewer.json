@@ -18,5 +18,4 @@
   "tools": "Internal documentation search",
   "type": "Zero-Shot",
   "outputStructure": "## Findings\n### [High] `path/to/file:line`\n- Problem: [What is wrong]\n- Why it matters: [Failure mode / user impact]\n- Suggested fix: [Concrete change or test]\n\n## Open Questions\n- [If any]\n\n## Overall Risk\n- [Low / Medium / High] with one-sentence rationale",
-  "github_profile_url": "https://github.com/promptlab-contributors"
 }
