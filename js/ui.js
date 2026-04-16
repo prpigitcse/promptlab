@@ -1,8 +1,24 @@
+/**
+ * Copyright 2026 Pradosh Ranjan Pattanayak
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 export function showToast(msg) {
   const container = document.getElementById("toast-container");
   if (!container) return;
   const id = "toast-" + Date.now();
-  
+
   const toast = document.createElement("div");
   toast.id = id;
   toast.className = "toast";
@@ -10,9 +26,9 @@ export function showToast(msg) {
   toast.setAttribute("role", "status");
   toast.setAttribute("aria-live", "polite");
   toast.innerHTML = `<i class="fas fa-check-circle text-green-400"></i> ${escapeHtml(msg)}`;
-  
+
   container.appendChild(toast);
-  
+
   setTimeout(() => {
     toast.style.animation = "slideIn 0.3s ease reverse forwards";
     setTimeout(() => {
@@ -42,23 +58,23 @@ export function closeModal(id) {
 export function renderPromptWithLineNumbers(prompt) {
   const container = document.getElementById("finalPromptText");
   if (!container) return;
-  
+
   container.dataset.rawPrompt = prompt;
   const lines = prompt.split("\n");
-  
+
   container.innerHTML = "";
   for (let i = 0; i < lines.length; i++) {
     const row = document.createElement("div");
     row.className = "prompt-row";
-    
+
     const lineNum = document.createElement("div");
     lineNum.className = "line-num";
     lineNum.textContent = i + 1;
-    
+
     const lineText = document.createElement("div");
     lineText.className = "line-text";
     lineText.textContent = lines[i]; // safe rendering since it uses textContent
-    
+
     row.appendChild(lineNum);
     row.appendChild(lineText);
     container.appendChild(row);
@@ -67,7 +83,7 @@ export function renderPromptWithLineNumbers(prompt) {
 
 export function switchPage(page) {
   const navLinks = document.querySelectorAll(".nav-link");
-  navLinks.forEach(link => {
+  navLinks.forEach((link) => {
     link.classList.remove("active", "text-gray-900");
     link.classList.add("text-white/70");
     if (link.dataset.page === page) {
@@ -77,7 +93,7 @@ export function switchPage(page) {
   });
 
   const pages = document.querySelectorAll(".page-content");
-  pages.forEach(p => {
+  pages.forEach((p) => {
     p.classList.remove("active");
     p.style.display = "none";
   });
@@ -102,7 +118,7 @@ export function saveFormState() {
 export function loadFormState() {
   const stateStr = localStorage.getItem("promptLab_formState");
   if (!stateStr) return;
-  
+
   try {
     const state = JSON.stringify(stateStr);
     const form = document.getElementById("promptForm");
@@ -112,7 +128,7 @@ export function loadFormState() {
     Object.entries(parsedState).forEach(([key, value]) => {
       const element = form.elements[key];
       if (element) {
-         element.value = value;
+        element.value = value;
       }
     });
 
@@ -124,7 +140,6 @@ export function loadFormState() {
     if (typeSelect) {
       typeSelect.dispatchEvent(new Event("change"));
     }
-
   } catch (err) {
     console.error("Failed to parse form state", err);
   }

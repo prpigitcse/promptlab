@@ -1,7 +1,41 @@
-import { buildPromptString, normalizePromptData, buildPromptSummary, CUSTOM_FORMAT_OPTION, hasValue, cleanValue } from './promptGenerator.js';
-import { checkBlueprintFormatCompatibility } from './validators.js';
-import { scheduleHarperWarmup, runHarperSuggestions, resetHarperSuggestions } from './harperIntegration.js';
-import { showToast, closeModal, renderPromptWithLineNumbers, switchPage, saveFormState, loadFormState } from './ui.js';
+/**
+ * Copyright 2026 Pradosh Ranjan Pattanayak
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import {
+  buildPromptString,
+  normalizePromptData,
+  buildPromptSummary,
+  CUSTOM_FORMAT_OPTION,
+  hasValue,
+  cleanValue,
+} from "./promptGenerator.js";
+import { checkBlueprintFormatCompatibility } from "./validators.js";
+import {
+  scheduleHarperWarmup,
+  runHarperSuggestions,
+  resetHarperSuggestions,
+} from "./harperIntegration.js";
+import {
+  showToast,
+  closeModal,
+  renderPromptWithLineNumbers,
+  switchPage,
+  saveFormState,
+  loadFormState,
+} from "./ui.js";
 
 let promptTemplates = [];
 let currentPage = 1;
@@ -18,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const btn = document.getElementById("generateBtn");
       const originalContent = btn.innerHTML;
-      btn.innerHTML = '<div class="spinner"></div> Processing...';
+      btn.innerHTML = "<div class=\"spinner\"></div> Processing...";
       btn.disabled = true;
 
       saveFormState(); // update state
@@ -34,8 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("downloadBtn").classList.remove("hidden");
 
         renderPromptWithLineNumbers(prompt);
-        document.getElementById("promptSummary").textContent = buildPromptSummary(data);
-        
+        document.getElementById("promptSummary").textContent =
+          buildPromptSummary(data);
+
         const formatChecks = checkBlueprintFormatCompatibility(data);
         runHarperSuggestions(prompt, formatChecks);
 
@@ -55,9 +90,21 @@ document.addEventListener("DOMContentLoaded", () => {
     typeSelect.addEventListener("change", function () {
       const examplesContainer = document.getElementById("examplesContainer");
       if (this.value === "Few-Shot") {
-        examplesContainer.classList.add("border-2", "border-accent/20", "p-4", "rounded-lg", "bg-accent-bg/10");
+        examplesContainer.classList.add(
+          "border-2",
+          "border-accent/20",
+          "p-4",
+          "rounded-lg",
+          "bg-accent-bg/10",
+        );
       } else {
-        examplesContainer.classList.remove("border-2", "border-accent/20", "p-4", "rounded-lg", "bg-accent-bg/10");
+        examplesContainer.classList.remove(
+          "border-2",
+          "border-accent/20",
+          "p-4",
+          "rounded-lg",
+          "bg-accent-bg/10",
+        );
       }
       saveFormState();
     });
@@ -66,7 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const formatSelect = document.getElementById("formatSelect");
   if (formatSelect) formatSelect.addEventListener("change", syncFormatUI);
   const customFormatInput = document.getElementById("customFormatInput");
-  if (customFormatInput) customFormatInput.addEventListener("input", syncFormatUI);
+  if (customFormatInput)
+    customFormatInput.addEventListener("input", syncFormatUI);
 
   const navGen = document.getElementById("navGenerator");
   const navLib = document.getElementById("navLibrary");
@@ -83,13 +131,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if (copyBtn) copyBtn.addEventListener("click", copyToClipboard);
 
   const cancelClearBtn = document.getElementById("cancelClearBtn");
-  if (cancelClearBtn) cancelClearBtn.addEventListener("click", () => closeModal("confirmModal"));
+  if (cancelClearBtn)
+    cancelClearBtn.addEventListener("click", () => closeModal("confirmModal"));
 
   const clearAllBtn = document.getElementById("clearAllBtn");
   if (clearAllBtn) clearAllBtn.addEventListener("click", executeClear);
 
   const modalOverlay = document.getElementById("modalOverlay");
-  if (modalOverlay) modalOverlay.addEventListener("click", () => closeModal("modalOverlay"));
+  if (modalOverlay)
+    modalOverlay.addEventListener("click", () => closeModal("modalOverlay"));
 
   const modalContentWrapper = document.getElementById("modalContentWrapper");
   if (modalContentWrapper) {
@@ -97,9 +147,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const modalCloseBtn = document.getElementById("modalCloseBtn");
-  const modalCloseSecondaryBtn = document.getElementById("modalCloseSecondaryBtn");
-  if (modalCloseBtn) modalCloseBtn.addEventListener("click", () => closeModal("modalOverlay"));
-  if (modalCloseSecondaryBtn) modalCloseSecondaryBtn.addEventListener("click", () => closeModal("modalOverlay"));
+  const modalCloseSecondaryBtn = document.getElementById(
+    "modalCloseSecondaryBtn",
+  );
+  if (modalCloseBtn)
+    modalCloseBtn.addEventListener("click", () => closeModal("modalOverlay"));
+  if (modalCloseSecondaryBtn)
+    modalCloseSecondaryBtn.addEventListener("click", () =>
+      closeModal("modalOverlay"),
+    );
 
   const paginationControls = document.getElementById("paginationControls");
   if (paginationControls) {
@@ -144,14 +200,19 @@ async function loadPrompts() {
     const manifestRes = await fetch("prompts/manifest.json");
     if (!manifestRes.ok) throw new Error("Manifest not found");
     const files = await manifestRes.json();
-    
-    const requests = files.map(file => fetch("prompts/" + file).then(res => res.json()));
+
+    const requests = files.map((file) =>
+      fetch("prompts/" + file).then((res) => res.json()),
+    );
     const responses = await Promise.all(requests);
-    
+
     promptTemplates = responses;
     renderLibrary();
   } catch (err) {
-    console.warn("Could not load prompts/manifest.json — library will be empty.", err);
+    console.warn(
+      "Could not load prompts/manifest.json — library will be empty.",
+      err,
+    );
     renderLibrary();
   }
 }
@@ -160,15 +221,20 @@ function syncFormatUI() {
   const formatSelect = document.getElementById("formatSelect");
   const customContainer = document.getElementById("customFormatContainer");
   const customInput = document.getElementById("customFormatInput");
-  const structureContainer = document.getElementById("dynamicStructureContainer");
+  const structureContainer = document.getElementById(
+    "dynamicStructureContainer",
+  );
   const structureLabel = document.getElementById("structureLabel");
   const structureInput = document.getElementById("outputStructure");
 
-  if (!formatSelect || !customContainer || !customInput || !structureContainer) return;
+  if (!formatSelect || !customContainer || !customInput || !structureContainer)
+    return;
 
   const selectedFormat = formatSelect.value;
   const isCustomFormat = selectedFormat === CUSTOM_FORMAT_OPTION;
-  const effectiveFormat = isCustomFormat ? cleanValue(customInput.value) : cleanValue(selectedFormat);
+  const effectiveFormat = isCustomFormat
+    ? cleanValue(customInput.value)
+    : cleanValue(selectedFormat);
   const shouldShowStructure = hasValue(effectiveFormat);
 
   customContainer.classList.toggle("hidden", !isCustomFormat);
@@ -176,8 +242,10 @@ function syncFormatUI() {
 
   structureContainer.classList.toggle("hidden", !shouldShowStructure);
   structureInput.disabled = !shouldShowStructure;
-  structureLabel.textContent = shouldShowStructure ? `${effectiveFormat} blueprint` : "Output Blueprint / Schema";
-  
+  structureLabel.textContent = shouldShowStructure
+    ? `${effectiveFormat} blueprint`
+    : "Output Blueprint / Schema";
+
   saveFormState();
 }
 
@@ -199,20 +267,20 @@ function executeClear() {
   document.getElementById("resultContent").classList.add("hidden");
   document.getElementById("copyBtn").classList.add("hidden");
   document.getElementById("downloadBtn").classList.add("hidden");
-  
+
   const finalPrompt = document.getElementById("finalPromptText");
   if (finalPrompt) {
     finalPrompt.innerHTML = "";
     delete finalPrompt.dataset.rawPrompt;
   }
-  
+
   resetHarperSuggestions();
-  
+
   const formatSelect = document.getElementById("formatSelect");
   if (formatSelect) formatSelect.dispatchEvent(new Event("change"));
   const typeSelect = document.getElementById("typeSelect");
   if (typeSelect) typeSelect.dispatchEvent(new Event("change"));
-  
+
   closeModal("confirmModal");
   localStorage.removeItem("promptLab_formState");
   showToast("Workspace reset complete.");
@@ -222,8 +290,10 @@ function downloadPrompt() {
   const finalPrompt = document.getElementById("finalPromptText");
   const promptText = (finalPrompt && finalPrompt.dataset.rawPrompt) || "";
   const summaryText = document.getElementById("promptSummary").textContent;
-  const fileName = (summaryText || "prompt-export").toLowerCase().replace(/[^\w-]/g, "-") + ".md";
-  
+  const fileName =
+    (summaryText || "prompt-export").toLowerCase().replace(/[^\w-]/g, "-") +
+    ".md";
+
   const blob = new Blob([promptText], { type: "text/markdown" });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -238,7 +308,9 @@ function copyToClipboard() {
   const finalPrompt = document.getElementById("finalPromptText");
   const text = (finalPrompt && finalPrompt.dataset.rawPrompt) || "";
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => showToast("Copied to clipboard."));
+    navigator.clipboard
+      .writeText(text)
+      .then(() => showToast("Copied to clipboard."));
   } else {
     // Fallback
     const dummy = document.createElement("textarea");
@@ -256,12 +328,13 @@ function getFilteredTemplates() {
   const searchInput = document.getElementById("librarySearch");
   const query = (searchInput ? searchInput.value : "").toLowerCase().trim();
   if (!query) return promptTemplates;
-  return promptTemplates.filter(t => 
-    (t.title || "").toLowerCase().includes(query) ||
-    (t.task || "").toLowerCase().includes(query) ||
-    (t.role || "").toLowerCase().includes(query) ||
-    (t.type || "").toLowerCase().includes(query) ||
-    (t.format || "").toLowerCase().includes(query)
+  return promptTemplates.filter(
+    (t) =>
+      (t.title || "").toLowerCase().includes(query) ||
+      (t.task || "").toLowerCase().includes(query) ||
+      (t.role || "").toLowerCase().includes(query) ||
+      (t.type || "").toLowerCase().includes(query) ||
+      (t.format || "").toLowerCase().includes(query),
   );
 }
 
@@ -269,7 +342,7 @@ function renderLibrary() {
   const grid = document.getElementById("libraryGrid");
   const paginationEl = document.getElementById("paginationControls");
   if (!grid || !paginationEl) return;
-  
+
   grid.innerHTML = "";
   paginationEl.innerHTML = "";
 
@@ -294,7 +367,10 @@ function renderLibrary() {
   pageItems.forEach((template) => {
     let authorHtml;
     if (template.github_profile_url) {
-      const username = template.github_profile_url.replace(/\/+$/, "").split("/").pop();
+      const username = template.github_profile_url
+        .replace(/\/+$/, "")
+        .split("/")
+        .pop();
       authorHtml = `<a href="${template.github_profile_url}" target="_blank" rel="noopener noreferrer"
                             class="author-link flex items-center gap-1.5 text-[10px] font-semibold text-muted hover:text-accent transition-colors">
                             <i class="fab fa-github text-xs"></i>${username}
@@ -306,7 +382,8 @@ function renderLibrary() {
     }
 
     const card = document.createElement("div");
-    card.className = "glass-panel p-6 card-template flex flex-col justify-between";
+    card.className =
+      "glass-panel p-6 card-template flex flex-col justify-between";
     card.dataset.templateId = template.id;
     card.innerHTML = `
         <div>
@@ -369,9 +446,10 @@ function renderPagination(totalPages, container, totalItems) {
     pages.push(totalPages);
   }
 
-  pages.forEach(p => {
+  pages.forEach((p) => {
     if (p === "...") {
-      html += `<span class="w-9 h-9 flex items-center justify-center text-zinc-400 text-xs font-bold">…</span>`;
+      html +=
+        "<span class=\"w-9 h-9 flex items-center justify-center text-zinc-400 text-xs font-bold\">…</span>";
     } else {
       const isActive = p === currentPage;
       html += `<button data-page="${p}"
@@ -399,11 +477,13 @@ function goToPage(page) {
   if (page < 1 || page > totalPages) return;
   currentPage = page;
   renderLibrary();
-  document.getElementById("library-page").scrollIntoView({ behavior: "smooth", block: "start" });
+  document
+    .getElementById("library-page")
+    .scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function viewTemplate(id) {
-  const t = promptTemplates.find(x => x.id === id);
+  const t = promptTemplates.find((x) => x.id === id);
   if (!t) return;
 
   document.getElementById("modalTitle").textContent = t.title;
@@ -425,14 +505,18 @@ function viewTemplate(id) {
                 <p class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest">Task Definition</p>
                 <p class="text-sm leading-relaxed font-semibold text-foreground/80">${t.task}</p>
             </div>
-            ${t.outputStructure ? `
+            ${
+  t.outputStructure
+    ? `
                 <div>
                     <p class="text-[10px] uppercase font-bold text-muted mb-3 tracking-widest">Blueprint / Schema</p>
                     <div class="code-container">
                         <div class="p-5 font-mono text-[11px] leading-relaxed w-full">${t.outputStructure.replace(/\n/g, "<br>")}</div>
                     </div>
                 </div>
-            ` : ""}
+            `
+    : ""
+}
         </div>
     `;
 
@@ -444,9 +528,9 @@ function viewTemplate(id) {
 
   clone.addEventListener("click", function () {
     loadTemplateToForm(t);
-    this.innerHTML = '<i class="fas fa-check"></i> Template Deployed';
+    this.innerHTML = "<i class=\"fas fa-check\"></i> Template Deployed";
     showToast("Template deployed to workspace.");
-    setTimeout(() => this.textContent = "Deploy Template", 2000);
+    setTimeout(() => (this.textContent = "Deploy Template"), 2000);
   });
 
   const modalOverlay = document.getElementById("modalOverlay");
@@ -462,7 +546,7 @@ function loadTemplateToForm(t) {
   const typeSelect = document.getElementById("typeSelect");
   if (typeSelect) {
     let match = "";
-    Array.from(typeSelect.options).forEach(opt => {
+    Array.from(typeSelect.options).forEach((opt) => {
       if (opt.value.toLowerCase().includes((t.type || "").toLowerCase())) {
         match = opt.value;
       }
@@ -471,25 +555,43 @@ function loadTemplateToForm(t) {
     typeSelect.dispatchEvent(new Event("change"));
   }
 
-  const fields = ["role", "audience", "context", "task", "variables", "reasoning", "examples", "constraints", "rules", "mustInclude", "avoid", "criteria", "errorPolicy", "tone", "length", "tools", "memory"];
-  fields.forEach(field => {
+  const fields = [
+    "role",
+    "audience",
+    "context",
+    "task",
+    "variables",
+    "reasoning",
+    "examples",
+    "constraints",
+    "rules",
+    "mustInclude",
+    "avoid",
+    "criteria",
+    "errorPolicy",
+    "tone",
+    "length",
+    "tools",
+    "memory",
+  ];
+  fields.forEach((field) => {
     const input = document.querySelector(`[name="${field}"]`);
     if (input) input.value = t[field] || "";
   });
 
   setFormatFields(t.format || "");
-  const outputStructure = document.querySelector(`[name="outputStructure"]`);
+  const outputStructure = document.querySelector("[name=\"outputStructure\"]");
   if (outputStructure) outputStructure.value = t.outputStructure || "";
-  
+
   saveFormState();
   const form = document.getElementById("promptForm");
-  if(form) form.dispatchEvent(new Event("submit"));
+  if (form) form.dispatchEvent(new Event("submit"));
 }
 
 function setFormatFields(formatValue) {
   const format = cleanValue(formatValue);
-  const formatSelect = document.querySelector(`[name="format"]`);
-  const customFormatInput = document.querySelector(`[name="customFormat"]`);
+  const formatSelect = document.querySelector("[name=\"format\"]");
+  const customFormatInput = document.querySelector("[name=\"customFormat\"]");
 
   if (!hasValue(format)) {
     if (formatSelect) formatSelect.value = "";
@@ -500,7 +602,7 @@ function setFormatFields(formatValue) {
 
   let matched = false;
   if (formatSelect) {
-    Array.from(formatSelect.options).forEach(opt => {
+    Array.from(formatSelect.options).forEach((opt) => {
       if (opt.value === format) matched = true;
     });
 

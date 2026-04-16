@@ -1,4 +1,20 @@
-import { hasValue, cleanValue } from './promptGenerator.js';
+/**
+ * Copyright 2026 Pradosh Ranjan Pattanayak
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { hasValue, cleanValue } from "./promptGenerator.js";
 
 export function checkBlueprintFormatCompatibility(data) {
   const selectedFormat = data.format;
@@ -9,7 +25,7 @@ export function checkBlueprintFormatCompatibility(data) {
   }
 
   const issues = validateBlueprintFormat(blueprint, selectedFormat);
-  
+
   if (issues.length === 0) {
     return null;
   } else {
@@ -59,9 +75,9 @@ export function validateBlueprintFormat(blueprint, format) {
   const issues = [];
   const patterns = {
     JSON: {
-      regex: /^\s*[{\[]/m,
+      regex: /^\s*[{[]]/m,
       needed: "JSON structure with braces or brackets, starting with { or [",
-      examples: '{"key": "value"}',
+      examples: "{\"key\": \"value\"}",
       isJSON: true,
     },
     Markdown: {
@@ -105,9 +121,9 @@ export function validateBlueprintFormat(blueprint, format) {
       examples: "Long text forming multiple sentences...",
     },
     "JSON Structure": {
-      regex: /^\s*[{\[]/m,
+      regex: /^\s*[{[]]/m,
       needed: "JSON with objects or arrays starting with { or [",
-      examples: '{"data": []}',
+      examples: "{\"data\": []}",
       isJSON: true,
     },
     "Structured Document": {
@@ -128,7 +144,7 @@ export function validateBlueprintFormat(blueprint, format) {
     Dialogue: {
       regex: /^#{1,2}\s.*:.*\n|^.*:\s+|^["'].*["']/m,
       needed: "Dialogue format with speakers or quotes",
-      examples: 'Speaker: "Text"',
+      examples: "Speaker: \"Text\"",
     },
     "Email Draft": {
       regex: /^Subject:|^To:|^From:|^Date:/m,
@@ -136,7 +152,7 @@ export function validateBlueprintFormat(blueprint, format) {
       examples: "Subject: Title\nTo: email@example.com",
     },
     "Code Block": {
-      regex: /^```|^    |^\t|[(){}\[\]<>]/m,
+      regex: /^```|^ {4}|^\t|[(){}[\]<>]/m,
       needed: "Code syntax with indentation or brackets",
       examples: "```\ncode\n```",
     },
@@ -163,7 +179,7 @@ export function validateBlueprintFormat(blueprint, format) {
     "HTML/CSS": {
       regex: /<[a-z]|{[\s\S]*?:[\s\S]*?;}|class=|id=/m,
       needed: "HTML tags or CSS rules",
-      examples: '<div class=""></div>',
+      examples: "<div class=\"\"></div>",
     },
   };
 
@@ -217,7 +233,8 @@ export function validateBlueprintFormat(blueprint, format) {
     issues.push({
       type: "too_short",
       message: "Blueprint seems too short to be effectively used.",
-      suggestion: "Consider adding more detail to your blueprint to guide the model better.",
+      suggestion:
+        "Consider adding more detail to your blueprint to guide the model better.",
       severity: "info",
     });
   }
@@ -238,7 +255,8 @@ function validateJSONStructure(blueprint) {
     issues.push({
       type: "unbalanced_braces",
       message: `Unbalanced braces detected: ${openBraces} opening, ${closeBraces} closing.`,
-      suggestion: `Check that all { have matching }.\n\nExample:\n{\n  "key": "value"\n}`,
+      suggestion:
+        "Check that all { have matching }.\n\nExample:\n{\n  \"key\": \"value\"\n}",
       severity: "error",
     });
   }
@@ -247,18 +265,21 @@ function validateJSONStructure(blueprint) {
     issues.push({
       type: "unbalanced_brackets",
       message: `Unbalanced brackets detected: ${openBrackets} opening, ${closeBrackets} closing.`,
-      suggestion: `Check that all [ have matching ].\n\nExample:\n[\n  "item1",\n  "item2"\n]`,
+      suggestion:
+        "Check that all [ have matching ].\n\nExample:\n[\n  \"item1\",\n  \"item2\"\n]",
       severity: "error",
     });
   }
 
-  if (trimmed.includes("'") && !trimmed.includes('"')) {
+  if (trimmed.includes("'") && !trimmed.includes("\"")) {
     const singleQuoteCount = (trimmed.match(/'/g) || []).length;
     if (singleQuoteCount >= 2) {
       issues.push({
         type: "quote_style",
-        message: "JSON uses single quotes ('), but JSON requires double quotes (\").",
-        suggestion: `Replace all single quotes with double quotes.\n\nWrong: {'key': 'value'}\nCorrect: {"key": "value"}`,
+        message:
+          "JSON uses single quotes ('), but JSON requires double quotes (\").",
+        suggestion:
+          "Replace all single quotes with double quotes.\n\nWrong: {'key': 'value'}\nCorrect: {\"key\": \"value\"}",
         severity: "warning",
       });
     }
@@ -271,7 +292,8 @@ function validateJSONStructure(blueprint) {
       issues.push({
         type: "invalid_json",
         message: `JSON parsing error: ${e.message.split("\n")[0]}`,
-        suggestion: `Ensure your JSON is valid. Common issues:\n- Missing commas between properties\n- Trailing commas\n- Unquoted keys\n- Unescaped special characters`,
+        suggestion:
+          "Ensure your JSON is valid. Common issues:\n- Missing commas between properties\n- Trailing commas\n- Unquoted keys\n- Unescaped special characters",
         severity: "error",
       });
     }
@@ -322,7 +344,8 @@ function validateCodeBlockSyntax(blueprint, format) {
       if (backticks < 2) {
         issues.push({
           type: "unclosed_code_block",
-          message: "CSS code block appears to be unclosed (missing closing ```).",
+          message:
+            "CSS code block appears to be unclosed (missing closing ```).",
           suggestion: "Close the code block with ```",
           severity: "warning",
         });
@@ -341,7 +364,8 @@ function validateMarkdownSyntax(blueprint) {
     issues.push({
       type: "unclosed_code_block",
       message: "Unmatched code block backticks (```) detected.",
-      suggestion: "Ensure code blocks are properly opened and closed with ```. Example:\n```\ncode here\n```",
+      suggestion:
+        "Ensure code blocks are properly opened and closed with ```. Example:\n```\ncode here\n```",
       severity: "warning",
     });
   }
@@ -351,7 +375,8 @@ function validateMarkdownSyntax(blueprint) {
     issues.push({
       type: "broken_link",
       message: "Broken markdown links detected (missing parentheses).",
-      suggestion: "Use proper link syntax: [text](url)\n\nExample: [Click here](https://example.com)\n\nInstead of: [text]",
+      suggestion:
+        "Use proper link syntax: [text](url)\n\nExample: [Click here](https://example.com)\n\nInstead of: [text]",
       severity: "info",
     });
   }
@@ -385,7 +410,8 @@ function validateEmailDraft(blueprint) {
     issues.push({
       type: "missing_headers",
       message: "Email draft is missing required headers.",
-      suggestion: `Email drafts should include at least:\n- Subject: ...\n- To: ...\n\nExample:\nSubject: Meeting Notes\nTo: team@example.com\nFrom: you@example.com\n\nEmail body text here...`,
+      suggestion:
+        "Email drafts should include at least:\n- Subject: ...\n- To: ...\n\nExample:\nSubject: Meeting Notes\nTo: team@example.com\nFrom: you@example.com\n\nEmail body text here...",
       severity: "warning",
     });
   } else if (foundHeaders.length === 1) {
@@ -418,18 +444,23 @@ function validateHTMLStructure(blueprint) {
     pairedTags[tagName] = (pairedTags[tagName] || 0) - 1;
   });
 
-  const mismatches = Object.entries(pairedTags).filter(([, count]) => count !== 0);
+  const mismatches = Object.entries(pairedTags).filter(
+    ([, count]) => count !== 0,
+  );
   if (mismatches.length > 0) {
     const details = mismatches
       .map(([tag, count]) =>
-        count > 0 ? `${tag} (${count} extra opening)` : `${tag} (${Math.abs(count)} extra closing)`,
+        count > 0
+          ? `${tag} (${count} extra opening)`
+          : `${tag} (${Math.abs(count)} extra closing)`,
       )
       .join(", ");
 
     issues.push({
       type: "unbalanced_tags",
       message: `Unbalanced HTML tags detected: ${details}`,
-      suggestion: "Ensure all opening tags have matching closing tags.\n\nExample:\n<div>\n  <p>Content</p>\n</div>",
+      suggestion:
+        "Ensure all opening tags have matching closing tags.\n\nExample:\n<div>\n  <p>Content</p>\n</div>",
       severity: "error",
     });
   }

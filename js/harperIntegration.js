@@ -1,6 +1,22 @@
-import { WorkerLinter, Dialect } from 'harper.js';
-import { binaryInlined } from 'harper.js/binaryInlined';
-import { cleanValue, hasValue } from './promptGenerator.js';
+/**
+ * Copyright 2026 Pradosh Ranjan Pattanayak
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { WorkerLinter, Dialect } from "harper.js";
+import { binaryInlined } from "harper.js/binaryInlined";
+import { cleanValue, hasValue } from "./promptGenerator.js";
 
 const HARPER_MAX_SUGGESTIONS = 5;
 let harperLinterParam = null;
@@ -62,7 +78,8 @@ async function lintPromptWithHarper(prompt, requestToken) {
     console.warn("Harper.js suggestions are unavailable.", error);
     renderHarperSuggestionState({
       state: "error",
-      status: "Harper.js suggestions are unavailable right now. Prompt generation still completed.",
+      status:
+        "Harper.js suggestions are unavailable right now. Prompt generation still completed.",
     });
   }
 }
@@ -92,18 +109,25 @@ function renderHarperSuggestions(prompt, lints) {
 
     bodyHtml += visibleLints
       .map((lint, index) => {
-        const span = typeof lint.span === "function" ? lint.span() : { start: 0, end: 0 };
+        const span =
+          typeof lint.span === "function" ? lint.span() : { start: 0, end: 0 };
         const lineNumber = getLineNumberForIndex(prompt, span.start);
         const excerpt = getPromptExcerpt(prompt, span.start, span.end);
         const replacements = getHarperReplacements(lint);
         const chips =
           replacements.length > 0
             ? replacements
-                .map((replacement) => `<span class="suggestion-chip">${escapeHtml(replacement)}</span>`)
-                .join("")
-            : '<span class="suggestion-chip suggestion-chip-muted">Review manually</span>';
+              .map(
+                (replacement) =>
+                  `<span class="suggestion-chip">${escapeHtml(replacement)}</span>`,
+              )
+              .join("")
+            : "<span class=\"suggestion-chip suggestion-chip-muted\">Review manually</span>";
         const lineLabel = lineNumber ? `Line ${lineNumber}` : "Prompt";
-        const message = typeof lint.message === "function" ? lint.message() : "Review this text for grammar or spelling.";
+        const message =
+          typeof lint.message === "function"
+            ? lint.message()
+            : "Review this text for grammar or spelling.";
 
         return `
                 <article class="suggestion-item">
@@ -121,7 +145,7 @@ function renderHarperSuggestions(prompt, lints) {
       .join("");
 
     if (formatSuggestions) {
-      bodyHtml += `<div class="my-3 h-px bg-black/5"></div>`;
+      bodyHtml += "<div class=\"my-3 h-px bg-black/5\"></div>";
     }
   }
 
@@ -172,7 +196,8 @@ export function resetHarperSuggestions() {
     panel.setAttribute("data-state", "idle");
   }
   if (statusEl) {
-    statusEl.textContent = "Harper.js suggestions will appear here after a prompt is generated.";
+    statusEl.textContent =
+      "Harper.js suggestions will appear here after a prompt is generated.";
   }
   if (bodyEl) {
     bodyEl.innerHTML = "";
@@ -197,7 +222,8 @@ function getLineNumberForIndex(text, index) {
 }
 
 function getPromptExcerpt(text, start, end) {
-  if (!Number.isInteger(start) || !Number.isInteger(end) || end < start) return "";
+  if (!Number.isInteger(start) || !Number.isInteger(end) || end < start)
+    return "";
   const excerpt = cleanValue(text.slice(start, end)).replace(/\s+/g, " ");
   if (!hasValue(excerpt)) return "";
   return excerpt.length > 90 ? `${excerpt.slice(0, 87)}...` : excerpt;
