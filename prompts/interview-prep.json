@@ -16,5 +16,5 @@
     "format": "Interactive Dialogue",
     "length": "Medium",
     "type": "Few-Shot",
-    "outputStructure": "**Question**: [Only when the user has not answered yet]\n\n**Feedback on your answer:**\n- Situation: [Notes]\n- Task: [Notes]\n- Action: [Notes]\n- Result: [Notes]\n\n**Overall Score**: X/10\n\n**How to Improve It**: [Specific coaching]\n\n**Next Question or Follow-Up**: [One prompt]"
+    "outputStructure": "**Question**: <<Only when the user has not answered yet>>\n\n**Feedback on your answer:**\n- Situation: <<Notes>>\n- Task: <<Notes>>\n- Action: <<Notes>>\n- Result: <<Notes>>\n\n**Overall Score**: X/10\n\n**How to Improve It**: <<Specific coaching>>\n\n**Next Question or Follow-Up**: <<One prompt>>"
 }

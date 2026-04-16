@@ -16,5 +16,5 @@
     "format": "Structured Document",
     "length": "Long",
     "type": "Zero-Shot",
-    "outputStructure": "## Assumptions\n- ...\n\n## Architecture Overview\n[High-level description]\n\n## Core Components\n### Compute\n### Data Stores\n### Networking / Edge\n### Observability\n\n## Security Posture\n- ...\n\n## Scaling and Reliability\n- ...\n\n## Trade-offs and Cost Notes\n- ..."
+    "outputStructure": "## Assumptions\n- ...\n\n## Architecture Overview\n<<High-level description>>\n\n## Core Components\n### Compute\n### Data Stores\n### Networking / Edge\n### Observability\n\n## Security Posture\n- ...\n\n## Scaling and Reliability\n- ...\n\n## Trade-offs and Cost Notes\n- ..."
 }

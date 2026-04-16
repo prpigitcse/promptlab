@@ -16,5 +16,5 @@
     "format": "SQL Code Block",
     "length": "Short",
     "type": "Zero-Shot",
-    "outputStructure": "### Assumptions\n- [If needed]\n\n```sql\nSELECT ...;\n```\n\n### Notes\n- [Optional performance or correctness note]"
+    "outputStructure": "### Assumptions\n- <<If needed>>\n\n```sql\nSELECT ...;\n```\n\n### Notes\n- <<Optional performance or correctness note>>"
 }

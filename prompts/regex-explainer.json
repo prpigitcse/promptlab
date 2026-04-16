@@ -16,5 +16,5 @@
     "format": "Structured Document",
     "length": "Short",
     "type": "Zero-Shot",
-    "outputStructure": "### Summary\n[What the regex is for]\n\n### Breakdown\n- `token`: [explanation]\n\n### Examples\n- Matches: `...` because ...\n- Fails: `...` because ..."
+    "outputStructure": "### Summary\n<<What the regex is for>>\n\n### Breakdown\n- `token`: <<explanation>>\n\n### Examples\n- Matches: `...` because ...\n- Fails: `...` because ..."
 }

@@ -16,5 +16,5 @@
     "format": "List",
     "length": "Medium",
     "type": "Zero-Shot",
-    "outputStructure": "**1. [Angle Name]**\nHook: [Opening line]\nCopy: [Variation]\nWhy it works: [One sentence]\n\n**2. [Angle Name]**\nHook: ...\nCopy: ...\nWhy it works: ..."
+    "outputStructure": "**1. <<Angle Name>>**\nHook: <<Opening line>>\nCopy: <<Variation>>\nWhy it works: <<One sentence>>\n\n**2. <<Angle Name>>**\nHook: ...\nCopy: ...\nWhy it works: ..."
 }

@@ -5,8 +5,12 @@
   "main": "index.html",
   "scripts": {
     "start": "serve .",
-    "dev": "live-server --port=3000 --open=index.html",
-    "build": "esbuild js/app.js --bundle --minify --outfile=js/app.min.js && esbuild css/style.css --minify --outfile=css/style.min.css"
+    "dev:serve": "live-server --port=3000 --open=index.html",
+    "dev:css": "npx @tailwindcss/cli -i ./css/style.css -o ./css/style.min.css --watch",
+    "dev": "npm-run-all --parallel dev:*",
+    "build:css": "npx @tailwindcss/cli -i ./css/style.css -o ./css/style.min.css --minify",
+    "build:js": "esbuild js/app.js --bundle --minify --outfile=js/app.min.js",
+    "build": "npm-run-all build:*"
   },
   "keywords": [
     "prompt-engineering",
@@ -22,7 +26,10 @@
     "serve": "^14.2.4"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2",
     "esbuild": "^0.19.0",
-    "live-server": "^1.2.2"
+    "live-server": "^1.2.2",
+    "npm-run-all": "^4.1.5",
+    "tailwindcss": "^4.2.2"
   }
 }

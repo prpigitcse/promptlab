@@ -16,5 +16,5 @@
     "format": "Categorized List",
     "length": "Medium",
     "type": "Zero-Shot",
-    "outputStructure": "### [Category Name]\n- **[Name]**: [Why it fits]\n- **[Name]**: [Why it fits]\n\n### [Category Name]\n- **[Name]**: [Why it fits]"
+    "outputStructure": "### <<Category Name>>\n- **<<Name>>**: <<Why it fits>>\n- **<<Name>>**: <<Why it fits>>\n\n### <<Category Name>>\n- **<<Name>>**: <<Why it fits>>"
 }

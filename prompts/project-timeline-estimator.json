@@ -16,5 +16,5 @@
     "format": "Timeline",
     "length": "Medium",
     "type": "Zero-Shot",
-    "outputStructure": "### Planning Assumptions\n- Team size: [[TEAM_SIZE]]\n- Major assumptions: [...]\n\n### Estimated Timeline\n**Sprint 1**\n- [Work item]\n\n**Sprint 2**\n- [Work item]\n\n### Critical Path and Risks\n- [Dependency or risk]\n\n### MVP vs Later Phase\n- MVP: [...]\n- Later: [...]"
+    "outputStructure": "### Planning Assumptions\n- Team size: [[TEAM_SIZE]]\n- Major assumptions: <<...>>\n\n### Estimated Timeline\n**Sprint 1**\n- <<Work item>>\n\n**Sprint 2**\n- <<Work item>>\n\n### Critical Path and Risks\n- <<Dependency or risk>>\n\n### MVP vs Later Phase\n- MVP: <<...>>\n- Later: <<...>>"
 }

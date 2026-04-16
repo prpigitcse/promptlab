@@ -16,5 +16,5 @@
     "format": "Paragraphs",
     "length": "Short",
     "type": "Zero-Shot",
-    "outputStructure": "### Plain English Summary\n[What this means in practice]\n\n### Key Obligations and Risks\n- [Point]\n- [Point]\n\n### What Is Unclear or Missing\n- [If applicable]\n\n*Not legal advice; informational summary only.*"
+    "outputStructure": "### Plain English Summary\n<<What this means in practice>>\n\n### Key Obligations and Risks\n- <<Point>>\n- <<Point>>\n\n### What Is Unclear or Missing\n- <<If applicable>>\n\n*Not legal advice; informational summary only.*"
 }

@@ -16,5 +16,5 @@
     "format": "Review Document",
     "length": "Medium",
     "type": "Zero-Shot",
-    "outputStructure": "### Accessibility Summary\n- Overall status: [Needs fixes / Mostly strong / Strong]\n- Highest-risk issue: [Issue or None]\n\n### Findings\n1. [Severity] [Issue]\n   - WCAG: [Criterion]\n   - Impact: [Who is affected and how]\n   - Fix: [Recommended change]\n\n### Corrected HTML\n```html\n...\n```\n\n### Notes Requiring More Context\n- [Color contrast, focus traps, JS behavior, etc. if applicable]"
+    "outputStructure": "### Accessibility Summary\n- Overall status: <<Needs fixes / Mostly strong / Strong>>\n- Highest-risk issue: <<Issue or None>>\n\n### Findings\n1. <<Severity>> <<Issue>>\n   - WCAG: <<Criterion>>\n   - Impact: <<Who is affected and how>>\n   - Fix: <<Recommended change>>\n\n### Corrected HTML\n```html\n...\n```\n\n### Notes Requiring More Context\n- <<Color contrast, focus traps, JS behavior, etc. if applicable>>"
 }

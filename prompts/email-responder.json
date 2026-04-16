@@ -16,5 +16,5 @@
     "format": "Email Draft",
     "length": "Short",
     "type": "Few-Shot",
-    "outputStructure": "Subject: [Suggested Subject if needed]\n\nHi [Name],\n\n[Opening acknowledgment]\n\n[Clear response, boundary, or decision]\n\n[Next step or respectful close]\n\nBest,\n[Your Name]"
+    "outputStructure": "Subject: <<Suggested Subject if needed>>\n\nHi <<Name>>,\n\n<<Opening acknowledgment>>\n\n<<Clear response, boundary, or decision>>\n\n<<Next step or respectful close>>\n\nBest,\n<<Your Name>>"
 }

@@ -16,5 +16,5 @@
     "format": "CSS Code Block",
     "length": "Short",
     "type": "Zero-Shot",
-    "outputStructure": "```css\n@keyframes [name] {\n  0% { ... }\n  100% { ... }\n}\n\n.[animation-class] {\n  animation: [name] 600ms ease-in-out both;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .[animation-class] {\n    animation: none;\n  }\n}\n```\n\n**Implementation Note:** [How to apply or tweak it]"
+    "outputStructure": "```css\n@keyframes <<name>> {\n  0% { ... }\n  100% { ... }\n}\n\n.<<animation-class>> {\n  animation: <<name>> 600ms ease-in-out both;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .<<animation-class>> {\n    animation: none;\n  }\n}\n```\n\n**Implementation Note:** <<How to apply or tweak it>>"
 }

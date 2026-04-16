@@ -16,5 +16,5 @@
     "format": "Paragraphs",
     "length": "Medium (300-500 words)",
     "type": "Zero-Shot",
-    "outputStructure": "[Scene Title]\n\n[Immersive scene text]\n\n[Closing line that lands on a reveal, threat, or unresolved choice]"
+    "outputStructure": "<<Scene Title>>\n\n<<Immersive scene text>>\n\n<<Closing line that lands on a reveal, threat, or unresolved choice>>"
 }

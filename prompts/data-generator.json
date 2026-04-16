@@ -16,5 +16,5 @@
     "format": "JSON",
     "length": "Variable",
     "type": "Zero-Shot",
-    "outputStructure": "[\n  {\n    \"field1\": \"value\",\n    \"field2\": 123,\n    \"field3\": true\n  }\n]"
+    "outputStructure": "<<\n  {\n    \"field1\": \"value\",\n    \"field2\": 123,\n    \"field3\": true\n  }\n>>"
 }

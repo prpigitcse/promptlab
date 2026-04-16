@@ -16,5 +16,5 @@
     "format": "Review Document",
     "length": "Medium",
     "type": "Zero-Shot",
-    "outputStructure": "### Investor Take\n[Overall reaction in 2-3 sentences]\n\n### Fatal Flaws\n1. [Flaw]\n2. [Flaw]\n3. [Flaw]\n\n### Questions an Investor Will Ask\n- [Question]\n\n### Redemptive Pivot\n[How to make the pitch more fundable]"
+    "outputStructure": "### Investor Take\n<<Overall reaction in 2-3 sentences>>\n\n### Fatal Flaws\n1. <<Flaw>>\n2. <<Flaw>>\n3. <<Flaw>>\n\n### Questions an Investor Will Ask\n- <<Question>>\n\n### Redemptive Pivot\n<<How to make the pitch more fundable>>"
 }

@@ -16,5 +16,5 @@
     "format": "Text snippets",
     "length": "Very Short",
     "type": "Few-Shot",
-    "outputStructure": "Primary recommendation: [Best version]\nAlternative 1: [Option]\nAlternative 2: [Option]\nRationale: [One short sentence]"
+    "outputStructure": "Primary recommendation: <<Best version>>\nAlternative 1: <<Option>>\nAlternative 2: <<Option>>\nRationale: <<One short sentence>>"
 }

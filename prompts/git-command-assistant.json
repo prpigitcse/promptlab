@@ -16,5 +16,5 @@
     "format": "Code Blocks with Text",
     "length": "Short",
     "type": "Zero-Shot",
-    "outputStructure": "### Recommended Steps\n1. Execute:\n```bash\n[command]\n```\nWhy: [brief explanation]\n\n### Verify\n```bash\n[verification command]\n```\n\n### Undo / Recovery\n```bash\n[recovery command if applicable]\n```"
+    "outputStructure": "### Recommended Steps\n1. Execute:\n```bash\n<<command>>\n```\nWhy: <<brief explanation>>\n\n### Verify\n```bash\n<<verification command>>\n```\n\n### Undo / Recovery\n```bash\n<<recovery command if applicable>>\n```"
 }

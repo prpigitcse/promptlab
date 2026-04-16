@@ -16,5 +16,5 @@
     "format": "Code Block",
     "length": "Matches Input",
     "type": "Zero-Shot",
-    "outputStructure": "```[language]\n// High-value comment above complex logic\n[Code with comments added in place]\n```"
+    "outputStructure": "```<<language>>\n// High-value comment above complex logic\n<<Code with comments added in place>>\n```"
 }

@@ -16,5 +16,5 @@
     "format": "Code Block",
     "length": "Medium",
     "type": "Zero-Shot",
-    "outputStructure": "### Regex Pattern\n`...`\n\n### Explanation\n- `...`: [what it matches]\n\n### Implementation ([[LANGUAGE]])\n```[[LANGUAGE]]\n...\n```\n\n### Test Cases\nMatches:\n- `...`\n\nFails:\n- `...`"
+    "outputStructure": "### Regex Pattern\n`...`\n\n### Explanation\n- `...`: <<what it matches>>\n\n### Implementation ([[LANGUAGE]])\n```[[LANGUAGE]]\n...\n```\n\n### Test Cases\nMatches:\n- `...`\n\nFails:\n- `...`"
 }

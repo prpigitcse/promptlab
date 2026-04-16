@@ -16,5 +16,5 @@
     "format": "Dialogue",
     "length": "Short",
     "type": "Few-Shot",
-    "outputStructure": "Correction: [What to change]\nBetter version: [Improved sentence]\nBrief note: [Short explanation]\nTutor reply ([[TARGET_LANGUAGE]]): [Natural response]\nNext question ([[TARGET_LANGUAGE]]): [Simple follow-up]"
+    "outputStructure": "Correction: <<What to change>>\nBetter version: <<Improved sentence>>\nBrief note: <<Short explanation>>\nTutor reply ([[TARGET_LANGUAGE]]): <<Natural response>>\nNext question ([[TARGET_LANGUAGE]]): <<Simple follow-up>>"
 }

@@ -16,5 +16,5 @@
     "format": "Markdown Tables and Lists",
     "length": "Long",
     "type": "Zero-Shot",
-    "outputStructure": "## Weekly Overview\n| Day | Breakfast | Lunch | Dinner | Snacks | Daily Calories |\n\n## Daily Breakdown\n### Monday\n- Breakfast: [Meal] - [Portion] - [Approx. calories]\n- Lunch: ...\n- Dinner: ...\n- Snacks: ...\n\n## Grocery List\n### Produce\n- ...\n\n### Protein / Pantry\n- ..."
+    "outputStructure": "## Weekly Overview\n| Day | Breakfast | Lunch | Dinner | Snacks | Daily Calories |\n\n## Daily Breakdown\n### Monday\n- Breakfast: <<Meal>> - <<Portion>> - <<Approx. calories>>\n- Lunch: ...\n- Dinner: ...\n- Snacks: ...\n\n## Grocery List\n### Produce\n- ...\n\n### Protein / Pantry\n- ..."
 }

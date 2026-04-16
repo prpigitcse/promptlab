@@ -16,5 +16,5 @@
     "format": "Bash Code Block",
     "length": "Medium",
     "type": "Zero-Shot",
-    "outputStructure": "```bash\n#!/usr/bin/env bash\nset -euo pipefail\n\n# Configuration / usage\n\n# Validation\n\n# Main logic\n```\n\n### Usage Notes\n- Dependencies: [...]\n- Example invocation: `...`\n- Safety notes: [...]"
+    "outputStructure": "```bash\n#!/usr/bin/env bash\nset -euo pipefail\n\n# Configuration / usage\n\n# Validation\n\n# Main logic\n```\n\n### Usage Notes\n- Dependencies: <<...>>\n- Example invocation: `...`\n- Safety notes: <<...>>"
 }

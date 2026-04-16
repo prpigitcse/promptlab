@@ -16,5 +16,5 @@
     "format": "Code Block and List",
     "length": "Medium",
     "type": "Few-Shot",
-    "outputStructure": "### Refactored Code\n```python\n[Code]\n```\n\n### Key Improvements\n1. [Change]: [Why it is better]\n2. [Change]: [Why it is better]"
+    "outputStructure": "### Refactored Code\n```python\n<<Code>>\n```\n\n### Key Improvements\n1. <<Change>>: <<Why it is better>>\n2. <<Change>>: <<Why it is better>>"
 }

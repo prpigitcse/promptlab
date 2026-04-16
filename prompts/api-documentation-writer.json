@@ -16,5 +16,5 @@
     "format": "Markdown",
     "length": "Medium",
     "type": "Zero-Shot",
-    "outputStructure": "## [METHOD] [Endpoint Path]\n\n### Purpose\n[What this endpoint does]\n\n### Authentication\n[Required / Not specified]\n\n### Request\n#### Path Parameters\n| Name | Type | Required | Description |\n\n#### Query Parameters\n| Name | Type | Required | Description |\n\n#### Request Body\n| Field | Type | Required | Description |\n\n### Example Request\n```http\n...\n```\n\n### Success Response\n```json\n...\n```\n\n### Error Responses\n| Status | Meaning | Cause |\n\n### Assumptions / Missing Details\n- [If needed]"
+    "outputStructure": "## <<METHOD>> <<Endpoint Path>>\n\n### Purpose\n<<What this endpoint does>>\n\n### Authentication\n<<Required / Not specified>>\n\n### Request\n#### Path Parameters\n| Name | Type | Required | Description |\n\n#### Query Parameters\n| Name | Type | Required | Description |\n\n#### Request Body\n| Field | Type | Required | Description |\n\n### Example Request\n```http\n...\n```\n\n### Success Response\n```json\n...\n```\n\n### Error Responses\n| Status | Meaning | Cause |\n\n### Assumptions / Missing Details\n- <<If needed>>"
 }

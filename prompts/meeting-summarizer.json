@@ -16,5 +16,5 @@
     "format": "Bullet Points",
     "length": "Short",
     "type": "Zero-Shot",
-    "outputStructure": "### Executive Summary\n[1-2 sentences]\n\n### Key Decisions\n- [Decision]\n\n### Action Items\n- [Owner]: [Task] (Due: [Date if mentioned])\n\n### Open Questions / Risks\n- [Question or blocker]"
+    "outputStructure": "### Executive Summary\n<<1-2 sentences>>\n\n### Key Decisions\n- <<Decision>>\n\n### Action Items\n- <<Owner>>: <<Task>> (Due: <<Date if mentioned>>)\n\n### Open Questions / Risks\n- <<Question or blocker>>"
 }
