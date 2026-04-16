@@ -9,7 +9,7 @@
     "dev:css": "tailwindcss -i ./css/style.css -o ./css/style.min.css --watch",
     "dev": "npm-run-all --parallel dev:*",
     "build:css": "tailwindcss -i ./css/style.css -o ./css/style.min.css --minify",
-    "build:js": "esbuild js/app.js --bundle --minify --outfile=js/app.min.js",
+    "build:js": "esbuild js/app.js --bundle --minify --external:fs --external:path --external:url --external:module --outfile=js/app.min.js",
     "build": "npm-run-all build:*"
   },
   "keywords": [
@@ -18,11 +18,11 @@
     "templates"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.2.0",
-    "jquery": "^4.0.0",
+    "harper.js": "^2.0.0",
     "serve": "^14.2.4"
   },
   "devDependencies": {
