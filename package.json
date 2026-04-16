@@ -6,9 +6,9 @@
   "scripts": {
     "start": "serve .",
     "dev:serve": "live-server --port=3000 --open=index.html",
-    "dev:css": "npx @tailwindcss/cli -i ./css/style.css -o ./css/style.min.css --watch",
+    "dev:css": "tailwindcss -i ./css/style.css -o ./css/style.min.css --watch",
     "dev": "npm-run-all --parallel dev:*",
-    "build:css": "npx @tailwindcss/cli -i ./css/style.css -o ./css/style.min.css --minify",
+    "build:css": "tailwindcss -i ./css/style.css -o ./css/style.min.css --minify",
     "build:js": "esbuild js/app.js --bundle --minify --outfile=js/app.min.js",
     "build": "npm-run-all build:*"
   },
