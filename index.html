@@ -93,7 +93,7 @@
             <p
               class="text-xs opacity-70 uppercase tracking-widest font-semibold"
             >
-              v0.1
+              v1.0.0
             </p>
           </div>
         </div>
@@ -179,7 +179,8 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div class="space-y-1.5">
-                        <label for="typeSelect"
+                        <label
+                          for="typeSelect"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Prompting Strategy</label
                         >
@@ -206,13 +207,15 @@
                         </p>
                       </div>
                       <div class="space-y-1.5">
-                        <label for="roleValue"
+                        <label
+                          for="roleValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >What role should the AI take?</label
                         >
                         <input
                           type="text"
-                          name="role" id="roleValue"
+                          name="role"
+                          id="roleValue"
                           class="form-input"
                           placeholder="e.g. Senior software architect, patient tutor, hiring manager"
                         />
@@ -222,13 +225,15 @@
                         </p>
                       </div>
                       <div class="space-y-1.5">
-                        <label for="audienceValue"
+                        <label
+                          for="audienceValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Who is this for?</label
                         >
                         <input
                           type="text"
-                          name="audience" id="audienceValue"
+                          name="audience"
+                          id="audienceValue"
                           class="form-input"
                           placeholder="e.g. Non-technical stakeholders, first-time founders, backend engineers"
                         />
@@ -238,12 +243,14 @@
                         </p>
                       </div>
                       <div class="space-y-1.5">
-                        <label for="contextValue"
+                        <label
+                          for="contextValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Background, context, or source material</label
                         >
                         <textarea
-                          name="context" id="contextValue"
+                          name="context"
+                          id="contextValue"
                           class="form-input"
                           placeholder="Paste key background details, source text, constraints from the project, or anything the model should know first."
                         ></textarea>
@@ -258,12 +265,14 @@
                     </div>
                     <div class="space-y-4">
                       <div class="space-y-1.5">
-                        <label for="taskValue"
+                        <label
+                          for="taskValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >What should the AI do?</label
                         >
                         <textarea
-                          name="task" id="taskValue"
+                          name="task"
+                          id="taskValue"
                           class="form-input"
                           required
                           placeholder="Describe the main job clearly. Example: Review this PR for regressions, security issues, and missing tests."
@@ -275,12 +284,14 @@
                       </div>
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-1.5">
-                          <label for="variablesValue"
+                          <label
+                            for="variablesValue"
                             class="text-[11px] font-bold text-muted uppercase tracking-wider"
                             >Reusable variables or placeholders</label
                           >
                           <textarea
-                            name="variables" id="variablesValue"
+                            name="variables"
+                            id="variablesValue"
                             class="form-input font-mono text-xs"
                             placeholder="e.g. {{user_name}}, {{code_snippet}}, [[TARGET_LANGUAGE]]"
                           ></textarea>
@@ -290,25 +301,29 @@
                           </p>
                         </div>
                         <div class="space-y-1.5">
-                          <label for="reasoningValue"
+                          <label
+                            for="reasoningValue"
                             class="text-[11px] font-bold text-muted uppercase tracking-wider"
                             >How should the AI approach the task?</label
                           >
                           <input
                             type="text"
-                            name="reasoning" id="reasoningValue"
+                            name="reasoning"
+                            id="reasoningValue"
                             class="form-input"
                             placeholder="e.g. Compare options, verify assumptions, reason step by step before answering"
                           />
                         </div>
                       </div>
                       <div class="space-y-1.5" id="examplesContainer">
-                        <label for="examplesValue"
+                        <label
+                          for="examplesValue"
                           class="text-[11px] font-bold text-accent uppercase tracking-wider"
                           >Reference examples</label
                         >
                         <textarea
-                          name="examples" id="examplesValue"
+                          name="examples"
+                          id="examplesValue"
                           class="form-input"
                           placeholder="Input: ... Output: ..."
                         ></textarea>
@@ -328,67 +343,79 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div class="space-y-1.5">
-                        <label for="constraintsValue"
+                        <label
+                          for="constraintsValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Hard constraints</label
                         >
                         <textarea
-                          name="constraints" id="constraintsValue"
+                          name="constraints"
+                          id="constraintsValue"
                           class="form-input"
                           placeholder="Anything that must stay true: supported sources only, specific tech stack, legal boundaries, word limits, etc."
                         ></textarea>
                       </div>
                       <div class="space-y-1.5">
-                        <label for="rulesValue"
+                        <label
+                          for="rulesValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Operational guardrails</label
                         >
                         <textarea
-                          name="rules" id="rulesValue"
+                          name="rules"
+                          id="rulesValue"
                           class="form-input"
                           placeholder="Rules the AI should follow every time, such as order of operations or formatting rules."
                         ></textarea>
                       </div>
                       <div class="space-y-1.5">
-                        <label for="mustIncludeValue"
+                        <label
+                          for="mustIncludeValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Must include</label
                         >
                         <textarea
-                          name="mustInclude" id="mustIncludeValue"
+                          name="mustInclude"
+                          id="mustIncludeValue"
                           class="form-input"
                           placeholder="Specific sections, points, examples, fields, or deliverables that must appear in the answer."
                         ></textarea>
                       </div>
                       <div class="space-y-1.5">
-                        <label for="avoidValue"
+                        <label
+                          for="avoidValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Avoid or do not include</label
                         >
                         <textarea
-                          name="avoid" id="avoidValue"
+                          name="avoid"
+                          id="avoidValue"
                           class="form-input"
                           placeholder="Anything the AI should avoid, such as jargon, speculation, unsupported claims, or filler."
                         ></textarea>
                       </div>
                       <div class="space-y-1.5">
-                        <label for="criteriaValue"
+                        <label
+                          for="criteriaValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >What does a good result look like?</label
                         >
                         <textarea
-                          name="criteria" id="criteriaValue"
+                          name="criteria"
+                          id="criteriaValue"
                           class="form-input"
                           placeholder="Describe what success looks like so the model can optimize for it."
                         ></textarea>
                       </div>
                       <div class="space-y-1.5">
-                        <label for="errorPolicyValue"
+                        <label
+                          for="errorPolicyValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Error Handling Policy</label
                         >
                         <textarea
-                          name="errorPolicy" id="errorPolicyValue"
+                          name="errorPolicy"
+                          id="errorPolicyValue"
                           class="form-input"
                           placeholder="What should the AI do when information is missing, conflicting, or ambiguous?"
                         ></textarea>
@@ -403,13 +430,15 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div class="space-y-1.5">
-                        <label for="toneValue"
+                        <label
+                          for="toneValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Tone & Voice</label
                         >
                         <input
                           type="text"
-                          name="tone" id="toneValue"
+                          name="tone"
+                          id="toneValue"
                           class="form-input"
                           placeholder="e.g. Calm and direct, friendly and concise, technical but approachable"
                         />
@@ -419,7 +448,8 @@
                         </p>
                       </div>
                       <div class="space-y-1.5">
-                        <label for="formatSelect"
+                        <label
+                          for="formatSelect"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >The final format</label
                         >
@@ -485,7 +515,8 @@
                         class="space-y-1.5 hidden"
                         id="customFormatContainer"
                       >
-                        <label for="customFormatInput"
+                        <label
+                          for="customFormatInput"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Custom format name</label
                         >
@@ -498,13 +529,15 @@
                         />
                       </div>
                       <div class="space-y-1.5">
-                        <label for="lengthValue"
+                        <label
+                          for="lengthValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Response Length</label
                         >
                         <input
                           type="text"
-                          name="length" id="lengthValue"
+                          name="length"
+                          id="lengthValue"
                           class="form-input"
                           placeholder="e.g. Short, concise, around 500 words, 5 bullet points"
                         />
@@ -512,25 +545,29 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                       <div class="space-y-1.5">
-                        <label for="toolsValue"
+                        <label
+                          for="toolsValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Available tools</label
                         >
                         <input
                           type="text"
-                          name="tools" id="toolsValue"
+                          name="tools"
+                          id="toolsValue"
                           class="form-input"
                           placeholder="e.g. Python interpreter, web search, internal docs search"
                         />
                       </div>
                       <div class="space-y-1.5">
-                        <label for="memoryValue"
+                        <label
+                          for="memoryValue"
                           class="text-[11px] font-bold text-muted uppercase tracking-wider"
                           >Memory policy</label
                         >
                         <input
                           type="text"
-                          name="memory" id="memoryValue"
+                          name="memory"
+                          id="memoryValue"
                           class="form-input"
                           placeholder="e.g. Use earlier conversation context only when it helps answer correctly"
                         />
