@@ -1,6 +1,6 @@
 {
   "name": "promptlab",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "PromptLab — Professional Prompt Engineering Studio",
   "type": "module",
   "main": "index.html",
