@@ -1,5 +1,7 @@
 # PromptLab
 
+> **Version 1.0.0** | Professional Prompt Engineering Studio
+
 PromptLab is a Professional Prompt Engineering Studio designed to store, manage, and share high-quality prompts.
 
 ## Folder Structure
@@ -7,24 +9,37 @@ PromptLab is a Professional Prompt Engineering Studio designed to store, manage,
 ```text
 promptlab/
 ├── css/
-│   └── style.css          # Main stylesheet for the application
+│   ├── style.css          # Main stylesheet for the application
+│   └── style.min.css      # Minified stylesheet (production build)
 ├── js/
-│   └── app.js             # Main frontend application logic 
-├── node_modules/          # Project dependencies (git-ignored)
+│   ├── app.js             # Main frontend application logic
+│   ├── app.min.js         # Minified app (production build)
+│   ├── harperIntegration.js  # Harper.js integration for grammar checking
+│   ├── promptGenerator.js    # Prompt generation utilities
+│   ├── ui.js              # UI component functions
+│   └── validators.js      # Validation utilities
+├── vendor/                # Third-party dependencies
+│   └── fontawesome/       # FontAwesome icon library
 ├── prompts/               # JSON-based prompt library directory
 │   ├── manifest.json      # Manifest index of all available prompts
 │   ├── LICENSE            # Specific content license for prompts
-│   └── *.json             # Individual prompt definition files
+│   └── *.json             # Individual prompt definition files (40+ templates)
+├── .github/               # GitHub configuration
+│   └── ISSUE_TEMPLATE/    # GitHub issue templates
 ├── .gitignore             # Git ignore configuration
 ├── index.html             # The main entry point of the application
 ├── copyright.html         # Copyright policy page
 ├── privacy.html           # Privacy policy page
 ├── terms.html             # Terms of service page
 ├── package.json           # Node.js project metadata and dependencies
-├── pnpm-lock.yaml         # Project dependency lockfile
-├── logo.png               # High-res application logo
-├── logo.jpg               # Application logo
-└── LICENSE                # Project source code license
+├── pnpm-lock.yaml         # Project dependency lockfile (pnpm lock file)
+├── pnpm-workspace.yaml    # Workspace configuration for pnpm
+├── eslint.config.js       # ESLint configuration for code quality
+├── wrangler.jsonc         # Cloudflare Wrangler configuration
+├── robots.txt             # Search engine crawler directives
+├── sitemap.xml            # XML sitemap for SEO
+├── logo.png               # Application logo
+└── LICENSE                # Project source code license (Apache 2.0)
 ```
 
 ## Contributing

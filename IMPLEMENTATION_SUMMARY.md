@@ -1,4 +1,4 @@
-# PromptLab Contributor Attribution - Implementation Summary
+# PromptLab Contributor Attribution - Implementation Summary (v1.0.0)
 
 ## ✅ Implementation Complete
 
