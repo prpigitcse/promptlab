@@ -33,6 +33,7 @@ import {
   closeModal,
   renderPromptWithLineNumbers,
   switchPage,
+  restorePageState,
   saveFormState,
   loadFormState,
 } from "./ui.js";
@@ -44,6 +45,7 @@ const ITEMS_PER_PAGE = 30;
 document.addEventListener("DOMContentLoaded", () => {
   loadPrompts();
   loadFormState();
+  restorePageState();
   scheduleHarperWarmup();
 
   const form = document.getElementById("promptForm");

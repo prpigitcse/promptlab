@@ -81,12 +81,36 @@ export function renderPromptWithLineNumbers(prompt) {
   }
 }
 
+const ACTIVE_PAGE_STORAGE_KEY = "promptLab_activePage";
+const DEFAULT_PAGE = "generator";
+const VALID_PAGES = new Set(["generator", "library"]);
+
+function normalizePage(page) {
+  return VALID_PAGES.has(page) ? page : DEFAULT_PAGE;
+}
+
+function getStoredPage() {
+  try {
+    return normalizePage(localStorage.getItem(ACTIVE_PAGE_STORAGE_KEY));
+  } catch {
+    return DEFAULT_PAGE;
+  }
+}
+
+export function restorePageState() {
+  switchPage(getStoredPage());
+}
+
 export function switchPage(page) {
+  const nextPage = normalizePage(page);
+  const activePage = document.getElementById(`${nextPage}-page`);
+  if (!activePage) return;
+
   const navLinks = document.querySelectorAll(".nav-link");
   navLinks.forEach((link) => {
     link.classList.remove("active", "text-gray-900");
     link.classList.add("text-white/70");
-    if (link.dataset.page === page) {
+    if (link.dataset.page === nextPage) {
       link.classList.add("active", "text-gray-900");
       link.classList.remove("text-white/70");
     }
@@ -98,11 +122,14 @@ export function switchPage(page) {
     p.style.display = "none";
   });
 
-  const activePage = document.getElementById(`${page}-page`);
-  if (activePage) {
-    activePage.classList.add("active");
-    activePage.style.display = "block";
-    activePage.style.animation = "fadeIn 0.3s ease-out forwards";
+  activePage.classList.add("active");
+  activePage.style.display = "block";
+  activePage.style.animation = "fadeIn 0.3s ease-out forwards";
+
+  try {
+    localStorage.setItem(ACTIVE_PAGE_STORAGE_KEY, nextPage);
+  } catch {
+    // Ignore storage failures; navigation should still work.
   }
 }
 
@@ -120,7 +147,6 @@ export function loadFormState() {
   if (!stateStr) return;
 
   try {
-    const state = JSON.stringify(stateStr);
     const form = document.getElementById("promptForm");
     if (!form) return;
     const parsedState = JSON.parse(stateStr);
