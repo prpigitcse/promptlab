@@ -83,7 +83,7 @@ export function renderPromptWithLineNumbers(prompt) {
 
 const ACTIVE_PAGE_STORAGE_KEY = "promptLab_activePage";
 const DEFAULT_PAGE = "generator";
-const VALID_PAGES = new Set(["generator", "library"]);
+const VALID_PAGES = new Set(["generator", "library", "my-prompts"]);
 
 function normalizePage(page) {
   return VALID_PAGES.has(page) ? page : DEFAULT_PAGE;
@@ -98,7 +98,8 @@ function getStoredPage() {
 }
 
 export function restorePageState() {
-  switchPage(getStoredPage());
+  const hashPage = window.location.hash.replace(/^#/, "");
+  switchPage(hashPage ? normalizePage(hashPage) : getStoredPage());
 }
 
 export function switchPage(page) {

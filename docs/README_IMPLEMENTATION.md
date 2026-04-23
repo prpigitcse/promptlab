@@ -4,6 +4,12 @@
 
 Your PromptLab now has a **complete, production-ready contributor attribution system** with GitHub profile linking.
 
+## Latest App Feature
+
+The site now includes a **My Prompts** tab backed by browser IndexedDB. It stores the active working draft and a generated prompt history locally, with actions to reopen prompts in Generator, copy prompt text, download Markdown, and delete saved records.
+
+See [`MY_PROMPTS_INDEXEDDB.md`](MY_PROMPTS_INDEXEDDB.md) for the storage schema and behavior notes.
+
 ---
 
 ## 📦 DELIVERABLES SUMMARY

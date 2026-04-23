@@ -4,6 +4,13 @@
 
 PromptLab is a Professional Prompt Engineering Studio designed to store, manage, and share high-quality prompts.
 
+## Features
+
+- Build structured prompts with role, context, constraints, examples, and output format controls.
+- Browse the public prompt library from JSON templates in `prompts/`.
+- Use **My Prompts** to keep a local IndexedDB-backed working draft and generated prompt history in the browser.
+- Copy or download generated prompts as Markdown.
+
 ## Folder Structure
 
 ```text
@@ -16,8 +23,11 @@ promptlab/
 │   ├── app.min.js         # Minified app (production build)
 │   ├── harperIntegration.js  # Harper.js integration for grammar checking
 │   ├── promptGenerator.js    # Prompt generation utilities
+│   ├── promptStorage.js      # IndexedDB storage for My Prompts
 │   ├── ui.js              # UI component functions
 │   └── validators.js      # Validation utilities
+├── docs/                  # Contributor and implementation documentation
+│   └── MY_PROMPTS_INDEXEDDB.md # Local browser storage implementation notes
 ├── vendor/                # Third-party dependencies
 │   └── fontawesome/       # FontAwesome icon library
 ├── prompts/               # JSON-based prompt library directory

@@ -19,6 +19,7 @@ export default [
         FormData: "readonly",
         Blob: "readonly",
         Event: "readonly",
+        indexedDB: "readonly",
       },
     },
     rules: {

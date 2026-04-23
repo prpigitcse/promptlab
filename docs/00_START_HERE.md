@@ -2,6 +2,10 @@
 
 > Complete Contributor Attribution System with GitHub Profile Linking
 
+## Recent Addition: My Prompts
+
+PromptLab now includes a **My Prompts** tab that stores the current working draft and generated prompt history in browser IndexedDB. See [`MY_PROMPTS_INDEXEDDB.md`](MY_PROMPTS_INDEXEDDB.md) for the implementation notes and privacy behavior.
+
 ## ✅ ALL TASKS COMPLETED
 
 Your PromptLab now has a **complete contributor attribution system** with GitHub profile linking!

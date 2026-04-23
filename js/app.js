@@ -31,16 +31,26 @@ import {
 import {
   showToast,
   closeModal,
+  escapeHtml,
   renderPromptWithLineNumbers,
   switchPage,
   restorePageState,
   saveFormState,
   loadFormState,
 } from "./ui.js";
+import {
+  DRAFT_RECORD_ID,
+  PROMPT_RECORD_KIND,
+  deletePromptRecord,
+  getPromptRecords,
+  savePromptRecord,
+} from "./promptStorage.js";
 
 let promptTemplates = [];
+let userPromptRecords = [];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 30;
+let workingPromptSaveTimer;
 
 document.addEventListener("DOMContentLoaded", () => {
   loadPrompts();
@@ -63,27 +73,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(form);
         const data = normalizePromptData(Object.fromEntries(formData));
         const prompt = buildPromptString(data);
+        const summary = buildPromptSummary(data);
 
-        document.getElementById("outputPlaceholder").classList.add("hidden");
-        document.getElementById("resultContent").classList.remove("hidden");
-        document.getElementById("copyBtn").classList.remove("hidden");
-        document.getElementById("downloadBtn").classList.remove("hidden");
-
-        renderPromptWithLineNumbers(prompt);
-        document.getElementById("promptSummary").textContent =
-          buildPromptSummary(data);
-
-        const formatChecks = checkBlueprintFormatCompatibility(data);
-        runHarperSuggestions(prompt, formatChecks);
+        showPromptResult(data, prompt, summary);
+        saveGeneratedPrompt(data, prompt, summary);
 
         btn.innerHTML = originalContent;
         btn.disabled = false;
-        showToast("Prompt engineered successfully.");
+        showToast("Prompt engineered and saved.");
       }, 600);
     });
 
     form.addEventListener("input", () => {
       saveFormState();
+      queueWorkingPromptSave();
     });
   }
 
@@ -109,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
       }
       saveFormState();
+      queueWorkingPromptSave();
     });
   }
 
@@ -120,8 +124,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const navGen = document.getElementById("navGenerator");
   const navLib = document.getElementById("navLibrary");
+  const navMyPrompts = document.getElementById("navMyPrompts");
   if (navGen) navGen.addEventListener("click", () => switchPage("generator"));
   if (navLib) navLib.addEventListener("click", () => switchPage("library"));
+  if (navMyPrompts) {
+    navMyPrompts.addEventListener("click", () => {
+      switchPage("my-prompts");
+      renderMyPrompts();
+    });
+  }
 
   const confirmClearBtn = document.getElementById("confirmClearBtn");
   if (confirmClearBtn) confirmClearBtn.addEventListener("click", confirmClear);
@@ -193,7 +204,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  let myPromptsSearchTimer;
+  const myPromptsSearch = document.getElementById("myPromptsSearch");
+  if (myPromptsSearch) {
+    myPromptsSearch.addEventListener("input", () => {
+      clearTimeout(myPromptsSearchTimer);
+      myPromptsSearchTimer = setTimeout(renderMyPrompts, 200);
+    });
+  }
+
+  const myPromptsGrid = document.getElementById("myPromptsGrid");
+  if (myPromptsGrid) {
+    myPromptsGrid.addEventListener("click", handleMyPromptAction);
+  }
+
   syncFormatUI();
+  queueWorkingPromptSave();
+  renderMyPrompts();
 });
 
 // Load Prompts using Fetch
@@ -249,6 +276,334 @@ function syncFormatUI() {
     : "Output Blueprint / Schema";
 
   saveFormState();
+  queueWorkingPromptSave();
+}
+
+function showPromptResult(data, prompt, summary) {
+  document.getElementById("outputPlaceholder").classList.add("hidden");
+  document.getElementById("resultContent").classList.remove("hidden");
+  document.getElementById("copyBtn").classList.remove("hidden");
+  document.getElementById("downloadBtn").classList.remove("hidden");
+
+  renderPromptWithLineNumbers(prompt);
+  document.getElementById("promptSummary").textContent =
+    summary || buildPromptSummary(data);
+
+  const formatChecks = checkBlueprintFormatCompatibility(data);
+  runHarperSuggestions(prompt, formatChecks);
+}
+
+function getCurrentFormState() {
+  const form = document.getElementById("promptForm");
+  if (!form) return {};
+  return Object.fromEntries(new FormData(form));
+}
+
+function hasPromptInput(data) {
+  return Object.values(data).some((value) => hasValue(value));
+}
+
+function getPromptTitle(data, fallback) {
+  const candidates = [data.task, data.role, data.context, fallback];
+  const title = candidates.map((value) => cleanValue(value)).find(hasValue);
+  return truncateText(title || "Untitled prompt", 84);
+}
+
+function truncateText(value, maxLength) {
+  const text = cleanValue(value);
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 3).trimEnd()}...`;
+}
+
+function getRecordSearchText(record) {
+  const dataValues = Object.values(record.data || {});
+  return [
+    record.title,
+    record.summary,
+    record.kind,
+    record.prompt,
+    ...dataValues,
+  ]
+    .map((value) => cleanValue(value).toLowerCase())
+    .join(" ");
+}
+
+function buildPromptRecord(record) {
+  return {
+    ...record,
+    searchText: getRecordSearchText(record),
+  };
+}
+
+function queueWorkingPromptSave() {
+  clearTimeout(workingPromptSaveTimer);
+  workingPromptSaveTimer = setTimeout(saveWorkingPrompt, 300);
+}
+
+async function saveWorkingPrompt() {
+  try {
+    const data = getCurrentFormState();
+
+    if (!hasPromptInput(data)) {
+      await deletePromptRecord(DRAFT_RECORD_ID);
+      await renderMyPrompts();
+      return;
+    }
+
+    const now = new Date().toISOString();
+    const normalizedData = normalizePromptData(data);
+    const record = buildPromptRecord({
+      id: DRAFT_RECORD_ID,
+      kind: PROMPT_RECORD_KIND.DRAFT,
+      title: getPromptTitle(normalizedData, "Working prompt"),
+      summary: buildPromptSummary(normalizedData),
+      prompt: "",
+      data,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    await savePromptRecord(record);
+    await renderMyPrompts();
+  } catch {
+    const statusEl = document.getElementById("myPromptsStorageStatus");
+    if (statusEl) statusEl.textContent = "Unavailable";
+  }
+}
+
+async function saveGeneratedPrompt(data, prompt, summary) {
+  const now = new Date().toISOString();
+  const record = buildPromptRecord({
+    id: `generated-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    kind: PROMPT_RECORD_KIND.GENERATED,
+    title: getPromptTitle(data, summary),
+    summary,
+    prompt,
+    data,
+    createdAt: now,
+    updatedAt: now,
+  });
+
+  try {
+    await savePromptRecord(record);
+    await renderMyPrompts();
+  } catch {
+    const statusEl = document.getElementById("myPromptsStorageStatus");
+    if (statusEl) statusEl.textContent = "Unavailable";
+  }
+}
+
+function getMyPromptsQuery() {
+  const searchInput = document.getElementById("myPromptsSearch");
+  return cleanValue(searchInput ? searchInput.value : "").toLowerCase();
+}
+
+function getFilteredUserPromptRecords() {
+  const query = getMyPromptsQuery();
+  if (!query) return userPromptRecords;
+  return userPromptRecords.filter((record) =>
+    cleanValue(record.searchText).toLowerCase().includes(query),
+  );
+}
+
+function updateMyPromptStats(records) {
+  const draftCount = records.filter(
+    (record) => record.kind === PROMPT_RECORD_KIND.DRAFT,
+  ).length;
+  const generatedCount = records.filter(
+    (record) => record.kind === PROMPT_RECORD_KIND.GENERATED,
+  ).length;
+
+  const draftEl = document.getElementById("myPromptsDraftCount");
+  const generatedEl = document.getElementById("myPromptsGeneratedCount");
+  const statusEl = document.getElementById("myPromptsStorageStatus");
+
+  if (draftEl) draftEl.textContent = draftCount;
+  if (generatedEl) generatedEl.textContent = generatedCount;
+  if (statusEl) statusEl.textContent = "IndexedDB";
+}
+
+async function renderMyPrompts() {
+  const grid = document.getElementById("myPromptsGrid");
+  if (!grid) return;
+
+  try {
+    userPromptRecords = await getPromptRecords();
+    updateMyPromptStats(userPromptRecords);
+  } catch {
+    updateMyPromptStats([]);
+    const statusEl = document.getElementById("myPromptsStorageStatus");
+    if (statusEl) statusEl.textContent = "Unavailable";
+    grid.innerHTML = `
+      <div class="col-span-full text-center py-20 opacity-70">
+        <i class="fas fa-database text-4xl text-white/40 mb-4"></i>
+        <p class="text-white/70 text-sm font-semibold">Browser storage is unavailable.</p>
+      </div>`;
+    return;
+  }
+
+  const filtered = getFilteredUserPromptRecords();
+  grid.innerHTML = "";
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="col-span-full text-center py-20 opacity-60">
+        <i class="fas fa-folder-open text-4xl text-white/40 mb-4"></i>
+        <p class="text-white/70 text-sm font-semibold">No saved prompts found.</p>
+      </div>`;
+    return;
+  }
+
+  filtered.forEach((record) => {
+    grid.appendChild(createUserPromptCard(record));
+  });
+}
+
+function createUserPromptCard(record) {
+  const card = document.createElement("article");
+  const isDraft = record.kind === PROMPT_RECORD_KIND.DRAFT;
+  const kindLabel = isDraft ? "Working" : "Generated";
+  const iconClass = isDraft ? "fa-pen-nib" : "fa-bolt";
+  const canExport = hasValue(record.prompt);
+
+  card.className = "glass-panel p-6 user-prompt-card flex flex-col";
+  card.innerHTML = `
+    <div class="flex items-start justify-between gap-4 mb-5">
+      <span class="text-[10px] font-bold uppercase px-3 py-1 rounded bg-black/5 text-muted tracking-widest">
+        <i class="fas ${iconClass} mr-2"></i>${kindLabel}
+      </span>
+      <span class="text-[10px] font-semibold text-muted uppercase text-right">
+        ${escapeHtml(formatRecordTime(record.updatedAt))}
+      </span>
+    </div>
+    <div class="flex-grow">
+      <h3 class="font-bold text-sm mb-3 tracking-tight">
+        ${escapeHtml(record.title || "Untitled prompt")}
+      </h3>
+      <p class="text-[11px] text-muted line-clamp-2 leading-relaxed font-semibold">
+        ${escapeHtml(record.summary || "Custom prompt")}
+      </p>
+    </div>
+    <div class="mt-6 pt-4 border-t border-black/5 flex items-center justify-between gap-4">
+      <span class="text-[10px] font-bold text-accent uppercase tracking-widest">
+        Local
+      </span>
+      <div class="prompt-card-actions">
+        <button
+          type="button"
+          class="prompt-action-button"
+          data-action="load"
+          data-record-id="${escapeHtml(record.id)}"
+          title="Open in Generator"
+          aria-label="Open in Generator"
+        >
+          <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+        </button>
+        <button
+          type="button"
+          class="prompt-action-button"
+          data-action="copy"
+          data-record-id="${escapeHtml(record.id)}"
+          title="Copy Prompt"
+          aria-label="Copy Prompt"
+          ${canExport ? "" : "disabled"}
+        >
+          <i class="fas fa-copy text-xs"></i>
+        </button>
+        <button
+          type="button"
+          class="prompt-action-button"
+          data-action="download"
+          data-record-id="${escapeHtml(record.id)}"
+          title="Download Markdown"
+          aria-label="Download Markdown"
+          ${canExport ? "" : "disabled"}
+        >
+          <i class="fas fa-download text-xs"></i>
+        </button>
+        <button
+          type="button"
+          class="prompt-action-button prompt-action-danger"
+          data-action="delete"
+          data-record-id="${escapeHtml(record.id)}"
+          title="Delete"
+          aria-label="Delete"
+        >
+          <i class="fas fa-trash-alt text-xs"></i>
+        </button>
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+function formatRecordTime(value) {
+  if (!value) return "Just now";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Just now";
+  return date.toLocaleString([], {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function findUserPromptRecord(recordId) {
+  return userPromptRecords.find((record) => record.id === recordId);
+}
+
+function handleMyPromptAction(e) {
+  const button = e.target.closest("button[data-action][data-record-id]");
+  if (!button) return;
+
+  const record = findUserPromptRecord(button.dataset.recordId);
+  if (!record) return;
+
+  switch (button.dataset.action) {
+  case "load":
+    loadUserPromptToForm(record);
+    break;
+  case "copy":
+    copyTextToClipboard(record.prompt, "Saved prompt copied.");
+    break;
+  case "download":
+    downloadPromptText(record.prompt, record.summary || record.title);
+    break;
+  case "delete":
+    deleteUserPrompt(record);
+    break;
+  default:
+    break;
+  }
+}
+
+function loadUserPromptToForm(record) {
+  populatePromptForm(record.data || {});
+
+  if (hasValue(record.prompt)) {
+    const data = normalizePromptData(record.data || {});
+    showPromptResult(data, record.prompt, record.summary);
+  } else {
+    document.getElementById("outputPlaceholder").classList.remove("hidden");
+    document.getElementById("resultContent").classList.add("hidden");
+    document.getElementById("copyBtn").classList.add("hidden");
+    document.getElementById("downloadBtn").classList.add("hidden");
+    resetHarperSuggestions();
+  }
+
+  showToast("Prompt opened in Generator.");
+}
+
+async function deleteUserPrompt(record) {
+  try {
+    await deletePromptRecord(record.id);
+    await renderMyPrompts();
+    showToast("Prompt deleted.");
+  } catch {
+    showToast("Could not delete prompt.");
+  }
 }
 
 function confirmClear() {
@@ -285,6 +640,12 @@ function executeClear() {
 
   closeModal("confirmModal");
   localStorage.removeItem("promptLab_formState");
+  deletePromptRecord(DRAFT_RECORD_ID)
+    .then(renderMyPrompts)
+    .catch(() => {
+      const statusEl = document.getElementById("myPromptsStorageStatus");
+      if (statusEl) statusEl.textContent = "Unavailable";
+    });
   showToast("Workspace reset complete.");
 }
 
@@ -292,10 +653,11 @@ function downloadPrompt() {
   const finalPrompt = document.getElementById("finalPromptText");
   const promptText = (finalPrompt && finalPrompt.dataset.rawPrompt) || "";
   const summaryText = document.getElementById("promptSummary").textContent;
-  const fileName =
-    (summaryText || "prompt-export").toLowerCase().replace(/[^\w-]/g, "-") +
-    ".md";
+  downloadPromptText(promptText, summaryText);
+}
 
+function downloadPromptText(promptText, summaryText) {
+  const fileName = buildPromptFileName(summaryText);
   const blob = new Blob([promptText], { type: "text/markdown" });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -306,13 +668,24 @@ function downloadPrompt() {
   showToast("Markdown file generated.");
 }
 
+function buildPromptFileName(summaryText) {
+  return (
+    (summaryText || "prompt-export").toLowerCase().replace(/[^\w-]/g, "-") +
+    ".md"
+  );
+}
+
 function copyToClipboard() {
   const finalPrompt = document.getElementById("finalPromptText");
   const text = (finalPrompt && finalPrompt.dataset.rawPrompt) || "";
+  copyTextToClipboard(text, "Copied to clipboard.");
+}
+
+function copyTextToClipboard(text, successMessage) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard
       .writeText(text)
-      .then(() => showToast("Copied to clipboard."));
+      .then(() => showToast(successMessage));
   } else {
     // Fallback
     const dummy = document.createElement("textarea");
@@ -321,7 +694,7 @@ function copyToClipboard() {
     dummy.select();
     document.execCommand("copy");
     document.body.removeChild(dummy);
-    showToast("Copied to clipboard.");
+    showToast(successMessage);
   }
 }
 
@@ -543,17 +916,24 @@ function viewTemplate(id) {
 }
 
 function loadTemplateToForm(t) {
+  populatePromptForm(t);
+
+  const form = document.getElementById("promptForm");
+  if (form) form.dispatchEvent(new Event("submit"));
+}
+
+function populatePromptForm(data) {
   switchPage("generator");
 
   const typeSelect = document.getElementById("typeSelect");
   if (typeSelect) {
     let match = "";
     Array.from(typeSelect.options).forEach((opt) => {
-      if (opt.value.toLowerCase().includes((t.type || "").toLowerCase())) {
+      if (opt.value.toLowerCase().includes((data.type || "").toLowerCase())) {
         match = opt.value;
       }
     });
-    typeSelect.value = match || t.type || "";
+    typeSelect.value = match || data.type || "";
     typeSelect.dispatchEvent(new Event("change"));
   }
 
@@ -578,16 +958,17 @@ function loadTemplateToForm(t) {
   ];
   fields.forEach((field) => {
     const input = document.querySelector(`[name="${field}"]`);
-    if (input) input.value = t[field] || "";
+    if (input) input.value = data[field] || "";
   });
 
-  setFormatFields(t.format || "");
+  const formatValue =
+    data.format === CUSTOM_FORMAT_OPTION ? data.customFormat : data.format;
+  setFormatFields(formatValue || "");
   const outputStructure = document.querySelector("[name=\"outputStructure\"]");
-  if (outputStructure) outputStructure.value = t.outputStructure || "";
+  if (outputStructure) outputStructure.value = data.outputStructure || "";
 
   saveFormState();
-  const form = document.getElementById("promptForm");
-  if (form) form.dispatchEvent(new Event("submit"));
+  queueWorkingPromptSave();
 }
 
 function setFormatFields(formatValue) {

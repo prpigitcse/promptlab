@@ -4,6 +4,10 @@
 
 All components for GitHub profile attribution in the PromptLab prompt library have been successfully implemented, tested, and documented.
 
+## Latest Deliverable: My Prompts
+
+The application now has a **My Prompts** tab powered by browser IndexedDB. It autosaves the working generator draft, stores each generated prompt, and provides local reopen/copy/download/delete actions. Implementation details are documented in [`MY_PROMPTS_INDEXEDDB.md`](MY_PROMPTS_INDEXEDDB.md).
+
 ---
 
 ## 📋 DELIVERABLES LIST

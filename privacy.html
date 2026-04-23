@@ -75,19 +75,25 @@
         </div>
 
         <nav
-          class="flex items-center gap-1 bg-black/10 p-1 rounded-lg border border-white/10 backdrop-blur-md"
+          class="flex flex-wrap items-center justify-center gap-1 bg-black/10 p-1 rounded-lg border border-white/10 backdrop-blur-md"
         >
           <a
-            href="index.html"
+            href="index.html#generator"
             class="nav-link active px-5 py-1.5 text-xs font-semibold rounded-md"
           >
             Generator
           </a>
           <a
-            href="index.html"
+            href="index.html#library"
             class="nav-link px-5 py-1.5 text-xs font-semibold rounded-md text-white/70 hover:text-white hover:bg-white/10"
           >
             Library
+          </a>
+          <a
+            href="index.html#my-prompts"
+            class="nav-link px-5 py-1.5 text-xs font-semibold rounded-md text-white/70 hover:text-white hover:bg-white/10"
+          >
+            My Prompts
           </a>
         </nav>
       </header>
@@ -126,6 +132,16 @@
                 <li>Basic usage data (e.g., pages visited, interactions)</li>
                 <li>Voluntary information via GitHub contributions</li>
               </ul>
+              <p class="mb-2">We store locally in your browser:</p>
+              <ul class="list-disc pl-6 space-y-1 mb-4">
+                <li>
+                  Working prompt drafts and generated prompt history in
+                  IndexedDB
+                </li>
+                <li>
+                  Interface state such as the active tab and current form values
+                </li>
+              </ul>
               <p class="mb-2">We do NOT collect:</p>
               <ul class="list-disc pl-6 space-y-1">
                 <li>Personal passwords</li>
@@ -158,8 +174,11 @@
                 Content
               </h2>
               <p>
-                Prompts generated on this platform are not stored permanently
-                unless explicitly saved or contributed.
+                Prompts generated on this platform are saved locally in your
+                browser for the My Prompts tab. They are not uploaded to
+                PromptLab servers by this feature unless you choose to copy,
+                export, or contribute them through an external service such as
+                GitHub.
               </p>
             </div>
 
@@ -167,7 +186,22 @@
               <h2
                 class="text-lg font-bold text-gray-900 mb-3 flex items-center"
               >
-                <i class="fas fa-chart-line text-accent mr-3"></i>4. Cookies &
+                <i class="fas fa-database text-accent mr-3"></i>4. Local
+                Browser Storage
+              </h2>
+              <p>
+                IndexedDB data remains on the device and browser profile where
+                it was created. You can remove saved prompts from the My Prompts
+                tab, reset the workspace draft, or clear this site's browser
+                storage.
+              </p>
+            </div>
+
+            <div>
+              <h2
+                class="text-lg font-bold text-gray-900 mb-3 flex items-center"
+              >
+                <i class="fas fa-chart-line text-accent mr-3"></i>5. Cookies &
                 Analytics
               </h2>
               <p>
@@ -181,7 +215,7 @@
               <h2
                 class="text-lg font-bold text-gray-900 mb-3 flex items-center"
               >
-                <i class="fas fa-share-alt text-accent mr-3"></i>5. Data Sharing
+                <i class="fas fa-share-alt text-accent mr-3"></i>6. Data Sharing
               </h2>
               <p>We do NOT sell or rent user data.</p>
             </div>
@@ -190,7 +224,7 @@
               <h2
                 class="text-lg font-bold text-gray-900 mb-3 flex items-center"
               >
-                <i class="fas fa-network-wired text-accent mr-3"></i>6.
+                <i class="fas fa-network-wired text-accent mr-3"></i>7.
                 Third-Party Services
               </h2>
               <p class="mb-2">We may rely on:</p>
@@ -205,7 +239,7 @@
               <h2
                 class="text-lg font-bold text-gray-900 mb-3 flex items-center"
               >
-                <i class="fas fa-user-shield text-accent mr-3"></i>7. Your
+                <i class="fas fa-user-shield text-accent mr-3"></i>8. Your
                 Rights
               </h2>
               <p>
@@ -218,7 +252,7 @@
               <h2
                 class="text-lg font-bold text-gray-900 mb-3 flex items-center"
               >
-                <i class="fas fa-sync text-accent mr-3"></i>8. Updates
+                <i class="fas fa-sync text-accent mr-3"></i>9. Updates
               </h2>
               <p>
                 This policy may be updated. Continued use implies acceptance.

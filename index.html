@@ -99,7 +99,7 @@
         </div>
 
         <nav
-          class="flex items-center gap-1 bg-black/10 p-1 rounded-lg border border-white/10 backdrop-blur-md"
+          class="flex flex-wrap items-center justify-center gap-1 bg-black/10 p-1 rounded-lg border border-white/10 backdrop-blur-md"
         >
           <button
             id="navGenerator"
@@ -116,6 +116,14 @@
             class="nav-link px-5 py-1.5 text-xs font-semibold rounded-md text-white/70 hover:text-white hover:bg-white/10"
           >
             Library
+          </button>
+          <button
+            id="navMyPrompts"
+            type="button"
+            data-page="my-prompts"
+            class="nav-link px-5 py-1.5 text-xs font-semibold rounded-md text-white/70 hover:text-white hover:bg-white/10"
+          >
+            My Prompts
           </button>
         </nav>
       </header>
@@ -791,6 +799,70 @@
           <div
             id="paginationControls"
             class="mt-10 flex items-center justify-center gap-2"
+          ></div>
+        </section>
+
+        <!-- My Prompts Page -->
+        <section id="my-prompts-page" class="page-content">
+          <div
+            class="flex flex-col md:flex-row md:items-center justify-between mb-10 text-white gap-4"
+          >
+            <div>
+              <h2 class="text-2xl font-bold tracking-tight mb-2">
+                My Prompts
+              </h2>
+              <p class="text-white/70 text-sm font-semibold">
+                Drafts and generated prompt history from this browser.
+              </p>
+            </div>
+            <div class="flex gap-4 w-full md:w-auto">
+              <div class="relative group w-full md:w-auto library-search">
+                <i
+                  aria-hidden="true"
+                  class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-sm transition-colors group-focus-within:text-white library-search-icon"
+                ></i>
+                <input
+                  type="text"
+                  placeholder="Search my prompts..."
+                  id="myPromptsSearch"
+                  class="bg-white/10 border border-white/20 rounded-xl pl-12 pr-6 py-3 text-sm w-full md:w-80 focus:bg-white/20 focus:border-white/40 outline-none text-white placeholder-white/40 backdrop-blur-xl transition-all library-search-input"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+            aria-label="My prompts summary"
+          >
+            <div class="glass-panel p-5 prompt-stat-card">
+              <p class="text-[10px] uppercase font-bold text-muted mb-2">
+                Working Draft
+              </p>
+              <p id="myPromptsDraftCount" class="text-3xl font-black">0</p>
+            </div>
+            <div class="glass-panel p-5 prompt-stat-card">
+              <p class="text-[10px] uppercase font-bold text-muted mb-2">
+                Generated
+              </p>
+              <p id="myPromptsGeneratedCount" class="text-3xl font-black">0</p>
+            </div>
+            <div class="glass-panel p-5 prompt-stat-card">
+              <p class="text-[10px] uppercase font-bold text-muted mb-2">
+                Storage
+              </p>
+              <p
+                id="myPromptsStorageStatus"
+                class="text-sm font-black uppercase tracking-wider"
+              >
+                IndexedDB
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="myPromptsGrid"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           ></div>
         </section>
       </main>

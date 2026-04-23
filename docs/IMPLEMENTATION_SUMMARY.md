@@ -4,6 +4,17 @@
 
 All components for GitHub profile attribution in the PromptLab prompt library have been successfully implemented.
 
+## Latest Update: My Prompts
+
+PromptLab now saves user-created prompt work locally in browser IndexedDB:
+
+- Working generator drafts are mirrored as a `working-draft` record.
+- Each generated prompt is saved as a timestamped history record.
+- The new **My Prompts** tab lets users reopen, copy, download, search, and delete local prompt records.
+- Privacy documentation now explains that this browser storage stays local unless the user copies, exports, or contributes the prompt.
+
+Technical details live in [`MY_PROMPTS_INDEXEDDB.md`](MY_PROMPTS_INDEXEDDB.md).
+
 ---
 
 ## 📦 What Was Delivered

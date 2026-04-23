@@ -540,6 +540,60 @@ textarea.form-input {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* ── My Prompts ── */
+.prompt-stat-card {
+  min-height: 7.5rem;
+}
+
+.user-prompt-card {
+  min-height: 17rem;
+  transition: all 0.25s ease;
+}
+
+.user-prompt-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.88);
+  border-color: var(--accent-light);
+}
+
+.prompt-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.prompt-action-button {
+  align-items: center;
+  background: rgba(109, 40, 217, 0.1);
+  border-radius: 999px;
+  color: var(--accent);
+  display: inline-flex;
+  height: 2.5rem;
+  justify-content: center;
+  transition: all 0.2s ease;
+  width: 2.5rem;
+}
+
+.prompt-action-button:hover:not(:disabled) {
+  background: var(--accent);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.prompt-action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.prompt-action-danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.prompt-action-danger:hover:not(:disabled) {
+  background: #dc2626;
+  color: white;
+}
+
 /* ── Library Search ── */
 .library-search {
   isolation: isolate;
