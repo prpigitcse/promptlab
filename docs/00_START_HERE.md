@@ -4,7 +4,7 @@
 
 ## Recent Addition: My Prompts
 
-PromptLab now includes a **My Prompts** tab that stores the current working draft and generated prompt history in browser IndexedDB. See [`MY_PROMPTS_INDEXEDDB.md`](MY_PROMPTS_INDEXEDDB.md) for the implementation notes and privacy behavior.
+PromptLab now includes a **My Prompts** tab that stores the current working prompt, generated status, and timestamped versions in browser IndexedDB. See [`MY_PROMPTS_INDEXEDDB.md`](MY_PROMPTS_INDEXEDDB.md) for the implementation notes and privacy behavior.
 
 ## ✅ ALL TASKS COMPLETED
 

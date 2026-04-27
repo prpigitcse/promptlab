@@ -8,9 +8,12 @@ All components for GitHub profile attribution in the PromptLab prompt library ha
 
 PromptLab now saves user-created prompt work locally in browser IndexedDB:
 
-- Working generator drafts are mirrored as a `working-draft` record.
-- Each generated prompt is saved as a timestamped history record.
-- The new **My Prompts** tab lets users reopen, copy, download, search, and delete local prompt records.
+- Working generator drafts are mirrored as a single active prompt record.
+- Generate Prompt promotes that same record to generated and appends a timestamped generated version.
+- Reopening a generated prompt changes it back to working instead of creating a duplicate.
+- The new **My Prompts** tab lets users reopen, inspect versions, copy, download, search, and delete local prompt records.
+- **Version history** shows each change (type and timestamp) in reverse chronological order. Users can **deploy** any past version to restore it as the current active prompt.
+- **Reset Workspace** safely preserves generated prompts. If a generated prompt was reopened as a draft, resetting reverts it to its last generated state instead of deleting it.
 - Privacy documentation now explains that this browser storage stays local unless the user copies, exports, or contributes the prompt.
 
 Technical details live in [`MY_PROMPTS_INDEXEDDB.md`](MY_PROMPTS_INDEXEDDB.md).

@@ -6,7 +6,9 @@ Your PromptLab now has a **complete, production-ready contributor attribution sy
 
 ## Latest App Feature
 
-The site now includes a **My Prompts** tab backed by browser IndexedDB. It stores the active working draft and a generated prompt history locally, with actions to reopen prompts in Generator, copy prompt text, download Markdown, and delete saved records.
+The site now includes a **My Prompts** tab backed by browser IndexedDB. It stores one active working prompt, promotes that same record to generated on Generate Prompt, and keeps timestamped versions locally with actions to reopen prompts in Generator, view version history, deploy past versions, copy prompt text, download Markdown, and delete saved records.
+
+Version history shows each entry's change type and timestamp, with a **Deploy** button to restore any past version as the current active prompt. Reset Workspace safely preserves generated prompts — if a generated prompt was reopened as a draft, resetting reverts it to its last generated state instead of deleting it.
 
 See [`MY_PROMPTS_INDEXEDDB.md`](MY_PROMPTS_INDEXEDDB.md) for the storage schema and behavior notes.
 

@@ -545,6 +545,10 @@ textarea.form-input {
   min-height: 7.5rem;
 }
 
+.prompt-storage-disclaimer {
+  background: rgba(255, 255, 255, 0.74);
+}
+
 .user-prompt-card {
   min-height: 17rem;
   transition: all 0.25s ease;
@@ -558,7 +562,9 @@ textarea.form-input {
 
 .prompt-card-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 .prompt-action-button {
@@ -592,6 +598,42 @@ textarea.form-input {
 .prompt-action-danger:hover:not(:disabled) {
   background: #dc2626;
   color: white;
+}
+
+.version-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.version-card {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(9, 9, 11, 0.06);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+.deploy-version-btn {
+  align-items: center;
+  background: rgba(109, 40, 217, 0.1);
+  border: 1px solid rgba(109, 40, 217, 0.15);
+  border-radius: 999px;
+  color: var(--accent);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 700;
+  gap: 0.25rem;
+  padding: 0.375rem 0.875rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.deploy-version-btn:hover {
+  background: var(--accent);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.35);
 }
 
 /* ── Library Search ── */

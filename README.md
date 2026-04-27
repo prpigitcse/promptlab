@@ -8,7 +8,7 @@ PromptLab is a Professional Prompt Engineering Studio designed to store, manage,
 
 - Build structured prompts with role, context, constraints, examples, and output format controls.
 - Browse the public prompt library from JSON templates in `prompts/`.
-- Use **My Prompts** to keep a local IndexedDB-backed working draft and generated prompt history in the browser.
+- Use **My Prompts** to keep a local IndexedDB-backed working prompt with timestamped generated versions in the browser.
 - Copy or download generated prompts as Markdown.
 
 ## Folder Structure

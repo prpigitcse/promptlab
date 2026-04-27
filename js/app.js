@@ -39,7 +39,6 @@ import {
   loadFormState,
 } from "./ui.js";
 import {
-  DRAFT_RECORD_ID,
   PROMPT_RECORD_KIND,
   deletePromptRecord,
   getPromptRecords,
@@ -50,7 +49,10 @@ let promptTemplates = [];
 let userPromptRecords = [];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 30;
+const ACTIVE_PROMPT_STORAGE_KEY = "promptLab_activePromptId";
 let workingPromptSaveTimer;
+let activePromptId = getStoredActivePromptId();
+let suppressWorkingPromptSave = true;
 
 document.addEventListener("DOMContentLoaded", () => {
   loadPrompts();
@@ -62,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
+      clearTimeout(workingPromptSaveTimer);
       const btn = document.getElementById("generateBtn");
       const originalContent = btn.innerHTML;
       btn.innerHTML = "<div class=\"spinner\"></div> Processing...";
@@ -69,14 +72,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       saveFormState(); // update state
 
-      setTimeout(() => {
-        const formData = new FormData(form);
-        const data = normalizePromptData(Object.fromEntries(formData));
+      setTimeout(async () => {
+        const rawData = Object.fromEntries(new FormData(form));
+        const data = normalizePromptData(rawData);
         const prompt = buildPromptString(data);
         const summary = buildPromptSummary(data);
 
         showPromptResult(data, prompt, summary);
-        saveGeneratedPrompt(data, prompt, summary);
+        await saveGeneratedPrompt(rawData, data, prompt, summary);
 
         btn.innerHTML = originalContent;
         btn.disabled = false;
@@ -219,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   syncFormatUI();
-  queueWorkingPromptSave();
+  suppressWorkingPromptSave = false;
   renderMyPrompts();
 });
 
@@ -276,7 +279,9 @@ function syncFormatUI() {
     : "Output Blueprint / Schema";
 
   saveFormState();
-  queueWorkingPromptSave();
+  if (!suppressWorkingPromptSave) {
+    queueWorkingPromptSave();
+  }
 }
 
 function showPromptResult(data, prompt, summary) {
@@ -293,10 +298,59 @@ function showPromptResult(data, prompt, summary) {
   runHarperSuggestions(prompt, formatChecks);
 }
 
+function resetPromptPreview() {
+  document.getElementById("outputPlaceholder").classList.remove("hidden");
+  document.getElementById("resultContent").classList.add("hidden");
+  document.getElementById("copyBtn").classList.add("hidden");
+  document.getElementById("downloadBtn").classList.add("hidden");
+
+  const finalPrompt = document.getElementById("finalPromptText");
+  if (finalPrompt) {
+    finalPrompt.innerHTML = "";
+    delete finalPrompt.dataset.rawPrompt;
+  }
+
+  resetHarperSuggestions();
+}
+
 function getCurrentFormState() {
   const form = document.getElementById("promptForm");
   if (!form) return {};
   return Object.fromEntries(new FormData(form));
+}
+
+function getStoredActivePromptId() {
+  try {
+    return localStorage.getItem(ACTIVE_PROMPT_STORAGE_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+function setActivePromptId(id) {
+  activePromptId = id;
+  try {
+    localStorage.setItem(ACTIVE_PROMPT_STORAGE_KEY, id);
+  } catch {
+    // Ignore storage failures; IndexedDB remains the source of saved prompts.
+  }
+}
+
+function clearActivePromptId() {
+  activePromptId = "";
+  try {
+    localStorage.removeItem(ACTIVE_PROMPT_STORAGE_KEY);
+  } catch {
+    // Ignore storage failures; the form still resets.
+  }
+}
+
+function createPromptId() {
+  return `prompt-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function createVersionId() {
+  return `version-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 function hasPromptInput(data) {
@@ -317,12 +371,20 @@ function truncateText(value, maxLength) {
 
 function getRecordSearchText(record) {
   const dataValues = Object.values(record.data || {});
+  const versionValues = getRecordVersions(record).flatMap((version) => [
+    version.kind,
+    version.summary,
+    version.prompt,
+    version.timestamp,
+    ...Object.values(version.data || {}),
+  ]);
   return [
     record.title,
     record.summary,
     record.kind,
     record.prompt,
     ...dataValues,
+    ...versionValues,
   ]
     .map((value) => cleanValue(value).toLowerCase())
     .join(" ");
@@ -335,61 +397,194 @@ function buildPromptRecord(record) {
   };
 }
 
-function queueWorkingPromptSave() {
-  clearTimeout(workingPromptSaveTimer);
-  workingPromptSaveTimer = setTimeout(saveWorkingPrompt, 300);
+function getRecordVersions(record) {
+  if (Array.isArray(record.versions) && record.versions.length > 0) {
+    return record.versions;
+  }
+
+  if (!record || !record.updatedAt) return [];
+
+  return [
+    {
+      id: createVersionId(),
+      kind: record.kind || PROMPT_RECORD_KIND.DRAFT,
+      timestamp: record.updatedAt,
+      summary: record.summary || "Custom prompt",
+      prompt: record.prompt || "",
+      data: record.data || {},
+    },
+  ];
 }
 
-async function saveWorkingPrompt() {
-  try {
-    const data = getCurrentFormState();
+function createVersion({ kind, timestamp, summary, prompt, data }) {
+  return {
+    id: createVersionId(),
+    kind,
+    timestamp,
+    summary: summary || "Custom prompt",
+    prompt: prompt || "",
+    data: data || {},
+  };
+}
 
-    if (!hasPromptInput(data)) {
-      await deletePromptRecord(DRAFT_RECORD_ID);
+function upsertPromptVersion(record, version, { replaceLatestDraft = false }) {
+  const versions = getRecordVersions(record);
+  const latestVersion = versions[versions.length - 1];
+
+  if (
+    replaceLatestDraft &&
+    latestVersion &&
+    latestVersion.kind === PROMPT_RECORD_KIND.DRAFT
+  ) {
+    versions[versions.length - 1] = {
+      ...latestVersion,
+      ...version,
+      id: latestVersion.id,
+    };
+    return versions;
+  }
+
+  return [...versions, version];
+}
+
+function getActiveRecord(records) {
+  return records.find((record) => record.id === activePromptId) || null;
+}
+
+function getFirstWorkingDraft(records) {
+  return records.find((record) => record.kind === PROMPT_RECORD_KIND.DRAFT);
+}
+
+function createEmptyRecord(now) {
+  return {
+    id: createPromptId(),
+    createdAt: now,
+    versions: [],
+  };
+}
+
+async function deleteOtherWorkingDrafts(records, keptRecordId) {
+  const staleDrafts = records.filter(
+    (record) =>
+      record.kind === PROMPT_RECORD_KIND.DRAFT && record.id !== keptRecordId,
+  );
+
+  await Promise.all(staleDrafts.map((record) => deletePromptRecord(record.id)));
+}
+
+function queueWorkingPromptSave(options = {}) {
+  clearTimeout(workingPromptSaveTimer);
+  workingPromptSaveTimer = setTimeout(() => saveWorkingPrompt(options), 300);
+}
+
+async function saveWorkingPrompt({ replaceGenerated = true } = {}) {
+  try {
+    const rawData = getCurrentFormState();
+    const records = await getPromptRecords();
+    const activeRecord = getActiveRecord(records);
+
+    if (!hasPromptInput(rawData)) {
+      if (activeRecord && activeRecord.kind === PROMPT_RECORD_KIND.DRAFT) {
+        const hasGenVersion = getRecordVersions(activeRecord).some(
+          (v) => v.kind === PROMPT_RECORD_KIND.GENERATED,
+        );
+        if (!hasGenVersion) {
+          await deletePromptRecord(activeRecord.id);
+        }
+      }
+      clearActivePromptId();
       await renderMyPrompts();
       return;
     }
 
     const now = new Date().toISOString();
-    const normalizedData = normalizePromptData(data);
-    const record = buildPromptRecord({
-      id: DRAFT_RECORD_ID,
+    const normalizedData = normalizePromptData(rawData);
+    let record = activeRecord;
+
+    if (
+      !record ||
+      (record.kind === PROMPT_RECORD_KIND.GENERATED && !replaceGenerated)
+    ) {
+      record = getFirstWorkingDraft(records) || createEmptyRecord(now);
+    }
+
+    setActivePromptId(record.id);
+
+    const version = createVersion({
+      kind: PROMPT_RECORD_KIND.DRAFT,
+      timestamp: now,
+      summary: buildPromptSummary(normalizedData),
+      prompt: "",
+      data: rawData,
+    });
+
+    const updatedRecord = buildPromptRecord({
+      ...record,
       kind: PROMPT_RECORD_KIND.DRAFT,
       title: getPromptTitle(normalizedData, "Working prompt"),
       summary: buildPromptSummary(normalizedData),
       prompt: "",
-      data,
-      createdAt: now,
+      data: rawData,
+      createdAt: record.createdAt || now,
       updatedAt: now,
+      versions: upsertPromptVersion(record, version, {
+        replaceLatestDraft: true,
+      }),
     });
 
-    await savePromptRecord(record);
+    await savePromptRecord(updatedRecord);
+    await deleteOtherWorkingDrafts(records, updatedRecord.id);
     await renderMyPrompts();
   } catch {
-    const statusEl = document.getElementById("myPromptsStorageStatus");
-    if (statusEl) statusEl.textContent = "Unavailable";
+    const grid = document.getElementById("myPromptsGrid");
+    if (grid) {
+      grid.innerHTML = `
+        <div class="col-span-full text-center py-20 opacity-70">
+          <i class="fas fa-database text-4xl text-white/40 mb-4 rounded-xl"></i>
+          <p class="text-white/70 text-sm font-semibold">Browser storage is unavailable.</p>
+        </div>`;
+    }
   }
 }
 
-async function saveGeneratedPrompt(data, prompt, summary) {
-  const now = new Date().toISOString();
-  const record = buildPromptRecord({
-    id: `generated-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    kind: PROMPT_RECORD_KIND.GENERATED,
-    title: getPromptTitle(data, summary),
-    summary,
-    prompt,
-    data,
-    createdAt: now,
-    updatedAt: now,
-  });
-
+async function saveGeneratedPrompt(rawData, normalizedData, prompt, summary) {
   try {
-    await savePromptRecord(record);
+    const now = new Date().toISOString();
+    const records = await getPromptRecords();
+    const record =
+      getActiveRecord(records) ||
+      getFirstWorkingDraft(records) ||
+      createEmptyRecord(now);
+
+    setActivePromptId(record.id);
+
+    const version = createVersion({
+      kind: PROMPT_RECORD_KIND.GENERATED,
+      timestamp: now,
+      summary,
+      prompt,
+      data: rawData,
+    });
+
+    const updatedRecord = buildPromptRecord({
+      ...record,
+      kind: PROMPT_RECORD_KIND.GENERATED,
+      title: getPromptTitle(normalizedData, summary),
+      summary,
+      prompt,
+      data: rawData,
+      createdAt: record.createdAt || now,
+      updatedAt: now,
+      versions: upsertPromptVersion(record, version, {
+        replaceLatestDraft: false,
+      }),
+    });
+
+    await savePromptRecord(updatedRecord);
+    await deleteOtherWorkingDrafts(records, updatedRecord.id);
     await renderMyPrompts();
   } catch {
-    const statusEl = document.getElementById("myPromptsStorageStatus");
-    if (statusEl) statusEl.textContent = "Unavailable";
+    showToast("Prompt generated, but browser storage is unavailable.");
   }
 }
 
@@ -416,11 +611,9 @@ function updateMyPromptStats(records) {
 
   const draftEl = document.getElementById("myPromptsDraftCount");
   const generatedEl = document.getElementById("myPromptsGeneratedCount");
-  const statusEl = document.getElementById("myPromptsStorageStatus");
 
   if (draftEl) draftEl.textContent = draftCount;
   if (generatedEl) generatedEl.textContent = generatedCount;
-  if (statusEl) statusEl.textContent = "IndexedDB";
 }
 
 async function renderMyPrompts() {
@@ -429,20 +622,18 @@ async function renderMyPrompts() {
 
   try {
     userPromptRecords = await getPromptRecords();
-    updateMyPromptStats(userPromptRecords);
   } catch {
     updateMyPromptStats([]);
-    const statusEl = document.getElementById("myPromptsStorageStatus");
-    if (statusEl) statusEl.textContent = "Unavailable";
     grid.innerHTML = `
       <div class="col-span-full text-center py-20 opacity-70">
-        <i class="fas fa-database text-4xl text-white/40 mb-4"></i>
+        <i class="fas fa-database text-4xl text-white/40 mb-4 rounded-xl"></i>
         <p class="text-white/70 text-sm font-semibold">Browser storage is unavailable.</p>
       </div>`;
     return;
   }
 
   const filtered = getFilteredUserPromptRecords();
+  updateMyPromptStats(filtered);
   grid.innerHTML = "";
 
   if (filtered.length === 0) {
@@ -465,6 +656,8 @@ function createUserPromptCard(record) {
   const kindLabel = isDraft ? "Working" : "Generated";
   const iconClass = isDraft ? "fa-pen-nib" : "fa-bolt";
   const canExport = hasValue(record.prompt);
+  const versions = getRecordVersions(record);
+  const versionLabel = `V${versions.length || 1}`;
 
   card.className = "glass-panel p-6 user-prompt-card flex flex-col";
   card.innerHTML = `
@@ -485,10 +678,20 @@ function createUserPromptCard(record) {
       </p>
     </div>
     <div class="mt-6 pt-4 border-t border-black/5 flex items-center justify-between gap-4">
-      <span class="text-[10px] font-bold text-accent uppercase tracking-widest">
-        Local
+      <span class="text-[10px] font-bold text-accent uppercase tracking-widest whitespace-nowrap">
+        Local ${versionLabel}
       </span>
       <div class="prompt-card-actions">
+        <button
+          type="button"
+          class="prompt-action-button"
+          data-action="history"
+          data-record-id="${escapeHtml(record.id)}"
+          title="View Versions"
+          aria-label="View Versions"
+        >
+          <i class="fas fa-clock-rotate-left text-xs"></i>
+        </button>
         <button
           type="button"
           class="prompt-action-button"
@@ -562,6 +765,9 @@ function handleMyPromptAction(e) {
   if (!record) return;
 
   switch (button.dataset.action) {
+  case "history":
+    openPromptVersionsModal(record);
+    break;
   case "load":
     loadUserPromptToForm(record);
     break;
@@ -579,20 +785,151 @@ function handleMyPromptAction(e) {
   }
 }
 
-function loadUserPromptToForm(record) {
-  populatePromptForm(record.data || {});
+function openPromptVersionsModal(record) {
+  const versions = getRecordVersions(record).slice().reverse();
+  const modalTitle = document.getElementById("modalTitle");
+  const modalFormatBadge = document.getElementById("modalFormatBadge");
+  const modalContent = document.getElementById("modalContent");
+  const modalUseBtn = document.getElementById("modalUseBtn");
+  const modalOverlay = document.getElementById("modalOverlay");
 
-  if (hasValue(record.prompt)) {
-    const data = normalizePromptData(record.data || {});
-    showPromptResult(data, record.prompt, record.summary);
-  } else {
-    document.getElementById("outputPlaceholder").classList.remove("hidden");
-    document.getElementById("resultContent").classList.add("hidden");
-    document.getElementById("copyBtn").classList.add("hidden");
-    document.getElementById("downloadBtn").classList.add("hidden");
-    resetHarperSuggestions();
+  if (!modalTitle || !modalFormatBadge || !modalContent || !modalOverlay) {
+    return;
   }
 
+  modalTitle.textContent = record.title || "Saved prompt";
+  modalFormatBadge.textContent = `${versions.length || 1} Versions`;
+  if (modalUseBtn) modalUseBtn.classList.add("hidden");
+
+  const versionHtml = versions
+    .map((version) => renderVersionCard(version))
+    .join("");
+
+  modalContent.innerHTML = `
+    <div class="version-list" data-record-id="${escapeHtml(record.id)}">
+      ${versionHtml}
+    </div>
+  `;
+
+  const versionList = modalContent.querySelector(".version-list");
+  if (versionList) {
+    versionList.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-version-id]");
+      if (!btn) return;
+      const recordId = versionList.dataset.recordId;
+      const versionId = btn.dataset.versionId;
+      if (recordId && versionId) {
+        deployVersion(recordId, versionId);
+      }
+    });
+  }
+
+  modalOverlay.classList.remove("hidden");
+  modalOverlay.classList.add("flex");
+  modalOverlay.setAttribute("role", "dialog");
+  modalOverlay.setAttribute("aria-modal", "true");
+}
+
+function renderVersionCard(version) {
+  const changeLabel =
+    version.kind === PROMPT_RECORD_KIND.GENERATED
+      ? "Generated prompt"
+      : "Draft saved";
+
+  return `
+    <article class="version-card">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <p class="text-xs font-bold text-foreground/90">
+            ${escapeHtml(changeLabel)}
+          </p>
+          <p class="text-[11px] font-semibold text-muted mt-1">
+            ${escapeHtml(formatRecordTime(version.timestamp))}
+          </p>
+        </div>
+        <button
+          type="button"
+          class="deploy-version-btn"
+          data-version-id="${escapeHtml(version.id)}"
+          title="Deploy this version"
+          aria-label="Deploy this version"
+        >
+          <i class="fas fa-rocket text-xs mr-1"></i> Deploy
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+async function deployVersion(recordId, versionId) {
+  try {
+    const records = await getPromptRecords();
+    const record = records.find((r) => r.id === recordId);
+    if (!record) return;
+
+    const versions = getRecordVersions(record);
+    const version = versions.find((v) => v.id === versionId);
+    if (!version) return;
+
+    const now = new Date().toISOString();
+    const deployedVersion = createVersion({
+      kind: version.kind,
+      timestamp: now,
+      summary: version.summary,
+      prompt: version.prompt,
+      data: version.data,
+    });
+
+    const normalizedData = normalizePromptData(version.data || {});
+    const updatedRecord = buildPromptRecord({
+      ...record,
+      kind: version.kind,
+      title: getPromptTitle(normalizedData, version.summary),
+      summary: version.summary,
+      prompt: version.prompt || "",
+      data: version.data || {},
+      updatedAt: now,
+      versions: [...versions, deployedVersion],
+    });
+
+    await savePromptRecord(updatedRecord);
+    setActivePromptId(record.id);
+
+    // Suppress the auto-save that populatePromptForm triggers via form events,
+    // so the deployed snapshot is not immediately overwritten by a new draft.
+    clearTimeout(workingPromptSaveTimer);
+    const prevSuppression = suppressWorkingPromptSave;
+    suppressWorkingPromptSave = true;
+    populatePromptForm(version.data || {});
+    suppressWorkingPromptSave = prevSuppression;
+
+    if (version.prompt) {
+      showPromptResult(
+        normalizedData,
+        version.prompt,
+        version.summary,
+      );
+    } else {
+      resetPromptPreview();
+    }
+
+    closeModal("modalOverlay");
+    await renderMyPrompts();
+    showToast("Version deployed.");
+  } catch {
+    showToast("Could not deploy version.");
+  }
+}
+
+async function loadUserPromptToForm(record) {
+  setActivePromptId(record.id);
+  populatePromptForm(record.data || {});
+
+  if (record.kind === PROMPT_RECORD_KIND.GENERATED) {
+    await saveWorkingPrompt({ replaceGenerated: true });
+  }
+
+  resetPromptPreview();
   showToast("Prompt opened in Generator.");
 }
 
@@ -620,31 +957,68 @@ function executeClear() {
   const form = document.getElementById("promptForm");
   if (form) form.reset();
   document.getElementById("dynamicStructureContainer").classList.add("hidden");
-  document.getElementById("outputPlaceholder").classList.remove("hidden");
-  document.getElementById("resultContent").classList.add("hidden");
-  document.getElementById("copyBtn").classList.add("hidden");
-  document.getElementById("downloadBtn").classList.add("hidden");
+  resetPromptPreview();
 
-  const finalPrompt = document.getElementById("finalPromptText");
-  if (finalPrompt) {
-    finalPrompt.innerHTML = "";
-    delete finalPrompt.dataset.rawPrompt;
-  }
-
-  resetHarperSuggestions();
-
+  const previousSuppression = suppressWorkingPromptSave;
+  suppressWorkingPromptSave = true;
   const formatSelect = document.getElementById("formatSelect");
   if (formatSelect) formatSelect.dispatchEvent(new Event("change"));
   const typeSelect = document.getElementById("typeSelect");
   if (typeSelect) typeSelect.dispatchEvent(new Event("change"));
+  suppressWorkingPromptSave = previousSuppression;
 
   closeModal("confirmModal");
   localStorage.removeItem("promptLab_formState");
-  deletePromptRecord(DRAFT_RECORD_ID)
+  const recordIdToClear = activePromptId;
+  clearActivePromptId();
+  if (!recordIdToClear) {
+    renderMyPrompts();
+    showToast("Workspace reset complete.");
+    return;
+  }
+
+  getPromptRecords()
+    .then((records) => {
+      const record = records.find((item) => item.id === recordIdToClear);
+      if (!record || record.kind !== PROMPT_RECORD_KIND.DRAFT) return null;
+
+      const hasGenVersion = getRecordVersions(record).some(
+        (v) => v.kind === PROMPT_RECORD_KIND.GENERATED,
+      );
+
+      // Pure working draft with no generated history — safe to delete
+      if (!hasGenVersion) {
+        return deletePromptRecord(record.id);
+      }
+
+      // Reopened generated prompt — revert to its last generated state
+      const lastGenVersion = [...getRecordVersions(record)]
+        .reverse()
+        .find((v) => v.kind === PROMPT_RECORD_KIND.GENERATED);
+      if (lastGenVersion) {
+        const restoredNormData = normalizePromptData(lastGenVersion.data || {});
+        const restored = buildPromptRecord({
+          ...record,
+          kind: PROMPT_RECORD_KIND.GENERATED,
+          title: getPromptTitle(restoredNormData, lastGenVersion.summary),
+          summary: lastGenVersion.summary,
+          prompt: lastGenVersion.prompt,
+          data: lastGenVersion.data,
+        });
+        return savePromptRecord(restored);
+      }
+      return null;
+    })
     .then(renderMyPrompts)
     .catch(() => {
-      const statusEl = document.getElementById("myPromptsStorageStatus");
-      if (statusEl) statusEl.textContent = "Unavailable";
+      const grid = document.getElementById("myPromptsGrid");
+      if (grid) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-20 opacity-70">
+            <i class="fas fa-database text-4xl text-white/40 mb-4 rounded-xl"></i>
+            <p class="text-white/70 text-sm font-semibold">Browser storage is unavailable.</p>
+          </div>`;
+      }
     });
   showToast("Workspace reset complete.");
 }
@@ -898,11 +1272,13 @@ function viewTemplate(id) {
   document.getElementById("modalContent").innerHTML = html;
 
   const btn = document.getElementById("modalUseBtn");
+  btn.classList.remove("hidden");
+  btn.innerHTML = "Deploy Template";
   const clone = btn.cloneNode(true); // Remove old listeners
   btn.parentNode.replaceChild(clone, btn);
 
-  clone.addEventListener("click", function () {
-    loadTemplateToForm(t);
+  clone.addEventListener("click", async function () {
+    await loadTemplateToForm(t);
     this.innerHTML = "<i class=\"fas fa-check\"></i> Template Deployed";
     showToast("Template deployed to workspace.");
     setTimeout(() => (this.textContent = "Deploy Template"), 2000);
@@ -915,15 +1291,16 @@ function viewTemplate(id) {
   modalOverlay.setAttribute("aria-modal", "true");
 }
 
-function loadTemplateToForm(t) {
+async function loadTemplateToForm(t) {
   populatePromptForm(t);
-
-  const form = document.getElementById("promptForm");
-  if (form) form.dispatchEvent(new Event("submit"));
+  await saveWorkingPrompt({ replaceGenerated: false });
+  resetPromptPreview();
 }
 
 function populatePromptForm(data) {
   switchPage("generator");
+  const previousSuppression = suppressWorkingPromptSave;
+  suppressWorkingPromptSave = true;
 
   const typeSelect = document.getElementById("typeSelect");
   if (typeSelect) {
@@ -967,8 +1344,8 @@ function populatePromptForm(data) {
   const outputStructure = document.querySelector("[name=\"outputStructure\"]");
   if (outputStructure) outputStructure.value = data.outputStructure || "";
 
+  suppressWorkingPromptSave = previousSuppression;
   saveFormState();
-  queueWorkingPromptSave();
 }
 
 function setFormatFields(formatValue) {
