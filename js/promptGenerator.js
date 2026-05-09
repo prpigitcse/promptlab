@@ -74,57 +74,77 @@ function getStrategyInstruction(data) {
   }
 }
 
-export function buildPromptString(data) {
-  const sections = [];
-  const outputRequirements = [];
+export function buildPromptString(data, sectionOrder) {
+  // Use provided order or default canonical order
+  const order = Array.isArray(sectionOrder) && sectionOrder.length === 4
+    ? sectionOrder
+    : ["identity", "task", "boundaries", "delivery"];
+
   const strategyInstruction = getStrategyInstruction(data);
 
-  if (hasValue(data.role))
-    sections.push(`## ROLE\nYou are acting as ${data.role}.`);
-  if (hasValue(data.audience))
-    sections.push(`## TARGET AUDIENCE\n${data.audience}`);
-  if (hasValue(data.context))
-    sections.push(`## BACKGROUND CONTEXT\n${data.context}`);
+  // Each section ID → function that returns an array of markdown blocks
+  const sectionBuilders = {
+    identity(d) {
+      const blocks = [];
+      if (hasValue(d.role))
+        blocks.push(`## ROLE\nYou are acting as ${d.role}.`);
+      if (hasValue(d.audience))
+        blocks.push(`## TARGET AUDIENCE\n${d.audience}`);
+      if (hasValue(d.context))
+        blocks.push(`## BACKGROUND CONTEXT\n${d.context}`);
+      return blocks;
+    },
+    task(d) {
+      const blocks = [];
+      blocks.push(`## PRIMARY TASK\n${d.task}`);
+      if (hasValue(strategyInstruction))
+        blocks.push(`## PROMPTING STRATEGY\n${strategyInstruction}`);
+      if (hasValue(d.variables))
+        blocks.push(`## INPUT VARIABLES\nUse these placeholders when relevant: ${d.variables}`);
+      if (hasValue(d.reasoning))
+        blocks.push(`## APPROACH\n${d.reasoning}`);
+      if (hasValue(d.examples))
+        blocks.push(`## REFERENCE EXAMPLES\n${d.examples}`);
+      return blocks;
+    },
+    boundaries(d) {
+      const blocks = [];
+      if (hasValue(d.mustInclude))
+        blocks.push(`## MUST INCLUDE\n${d.mustInclude}`);
+      if (hasValue(d.avoid))
+        blocks.push(`## AVOID\n${d.avoid}`);
+      if (hasValue(d.constraints))
+        blocks.push(`## CONSTRAINTS\n${d.constraints}`);
+      if (hasValue(d.rules))
+        blocks.push(`## RULES\n${d.rules}`);
+      if (hasValue(d.criteria))
+        blocks.push(`## SUCCESS CRITERIA\n${d.criteria}`);
+      if (hasValue(d.errorPolicy))
+        blocks.push(`## WHEN INFORMATION IS MISSING\n${d.errorPolicy}`);
+      return blocks;
+    },
+    delivery(d) {
+      const reqs = [];
+      if (hasValue(d.tone))   reqs.push(`- Tone and style: ${d.tone}`);
+      if (hasValue(d.format)) reqs.push(`- Format: ${d.format}`);
+      if (hasValue(d.length)) reqs.push(`- Length: ${d.length}`);
+      if (hasValue(d.tools))  reqs.push(`- Available tools: ${d.tools}`);
+      if (hasValue(d.memory)) reqs.push(`- Memory policy: ${d.memory}`);
+      const blocks = [];
+      if (reqs.length > 0)
+        blocks.push(`## OUTPUT REQUIREMENTS\n${reqs.join("\n")}`);
+      if (hasValue(d.outputStructure))
+        blocks.push(`## OUTPUT BLUEPRINT\n${d.outputStructure}`);
+      return blocks;
+    },
+  };
 
-  sections.push(`## PRIMARY TASK\n${data.task}`);
+  const allBlocks = [];
+  order.forEach((sectionId) => {
+    const builder = sectionBuilders[sectionId];
+    if (builder) allBlocks.push(...builder(data));
+  });
 
-  if (hasValue(strategyInstruction))
-    sections.push(`## PROMPTING STRATEGY\n${strategyInstruction}`);
-  if (hasValue(data.variables))
-    sections.push(
-      `## INPUT VARIABLES\nUse these placeholders when relevant: ${data.variables}`,
-    );
-  if (hasValue(data.reasoning)) sections.push(`## APPROACH\n${data.reasoning}`);
-  if (hasValue(data.examples))
-    sections.push(`## REFERENCE EXAMPLES\n${data.examples}`);
-  if (hasValue(data.mustInclude))
-    sections.push(`## MUST INCLUDE\n${data.mustInclude}`);
-  if (hasValue(data.avoid)) sections.push(`## AVOID\n${data.avoid}`);
-  if (hasValue(data.constraints))
-    sections.push(`## CONSTRAINTS\n${data.constraints}`);
-  if (hasValue(data.rules)) sections.push(`## RULES\n${data.rules}`);
-  if (hasValue(data.criteria))
-    sections.push(`## SUCCESS CRITERIA\n${data.criteria}`);
-  if (hasValue(data.errorPolicy))
-    sections.push(`## WHEN INFORMATION IS MISSING\n${data.errorPolicy}`);
-  if (hasValue(data.tone))
-    outputRequirements.push(`- Tone and style: ${data.tone}`);
-  if (hasValue(data.format))
-    outputRequirements.push(`- Format: ${data.format}`);
-  if (hasValue(data.length))
-    outputRequirements.push(`- Length: ${data.length}`);
-  if (hasValue(data.tools))
-    outputRequirements.push(`- Available tools: ${data.tools}`);
-  if (hasValue(data.memory))
-    outputRequirements.push(`- Memory policy: ${data.memory}`);
-
-  if (outputRequirements.length > 0) {
-    sections.push(`## OUTPUT REQUIREMENTS\n${outputRequirements.join("\n")}`);
-  }
-
-  if (hasValue(data.outputStructure)) {
-    sections.push(`## OUTPUT BLUEPRINT\n${data.outputStructure}`);
-  }
-
-  return sections.join("\n\n");
+  return allBlocks.join("\n\n");
 }
+

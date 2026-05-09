@@ -669,3 +669,353 @@ textarea.form-input {
   backdrop-filter: blur(12px) brightness(0.7);
   -webkit-backdrop-filter: blur(12px) brightness(0.7);
 }
+
+/* ── Draggable Form Sections ── */
+.form-section {
+  border-radius: var(--radius);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.15s ease,
+    opacity 0.15s ease;
+  cursor: default;
+  position: relative;
+}
+
+.form-section.section-dragging {
+  opacity: 0.45;
+  transform: scale(0.98);
+  box-shadow: 0 8px 30px rgba(109, 40, 217, 0.18);
+}
+
+.form-section.section-drop-above {
+  border-top: 2.5px solid var(--accent);
+  padding-top: 2px;
+}
+
+.form-section.section-drop-below {
+  border-bottom: 2.5px solid var(--accent);
+  padding-bottom: 2px;
+}
+
+/* Section label: now acts as a toolbar row */
+.section-label {
+  cursor: pointer;
+  user-select: none;
+  padding: 0.5rem 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease;
+  margin-bottom: 1rem;
+}
+
+.section-label:hover {
+  background: rgba(109, 40, 217, 0.04);
+}
+
+/* Drag handle — visible only on section hover */
+.section-drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  cursor: grab;
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+}
+
+.section-drag-handle:active {
+  cursor: grabbing;
+}
+
+.form-section:hover .section-drag-handle,
+.section-label:hover .section-drag-handle {
+  opacity: 0.55;
+}
+
+/* Section icon */
+.section-icon {
+  flex-shrink: 0;
+}
+
+/* Completion indicator dot */
+.section-complete-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1.5px solid rgba(109, 40, 217, 0.25);
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.section-complete-dot.is-complete {
+  background: #22c55e;
+  border-color: #16a34a;
+  box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+}
+
+/* Chevron for collapse toggle */
+.section-chevron {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  opacity: 0.5;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s ease;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+}
+
+.section-label[aria-expanded="false"] .section-chevron {
+  transform: rotate(-90deg);
+}
+
+/* Section body — animated collapse */
+.section-body {
+  overflow: hidden;
+  transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+  max-height: 2000px;
+  opacity: 1;
+}
+
+.section-body.is-collapsed {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Form Quick-Nav Pills ── */
+.form-quick-nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.5rem 0.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 0.5rem;
+}
+
+.form-quick-nav-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+}
+
+.quick-nav-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(109, 40, 217, 0.07);
+  color: var(--accent);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border: 1px solid rgba(109, 40, 217, 0.12);
+  transition: all 0.18s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.quick-nav-pill:hover {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(109, 40, 217, 0.3);
+}
+
+.quick-nav-pill-reset {
+  background: rgba(239, 68, 68, 0.07);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.15);
+}
+
+.quick-nav-pill-reset:hover {
+  background: #dc2626;
+  color: white;
+  border-color: #dc2626;
+  box-shadow: 0 3px 10px rgba(239, 68, 68, 0.3);
+}
+
+/* Ensure .hidden always wins over component display rules */
+.hidden {
+  display: none !important;
+}
+
+/* ── Section Order Panel ── */
+.section-order-panel {
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(109, 40, 217, 0.12);
+  border-radius: var(--radius);
+  padding: 1rem 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.section-order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.section-order-title {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.section-order-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.07);
+  border: 1px solid rgba(239, 68, 68, 0.18);
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.section-order-reset:hover {
+  background: #dc2626;
+  color: white;
+  border-color: #dc2626;
+}
+
+.section-order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.section-order-hint {
+  font-size: 0.68rem;
+  color: var(--muted);
+  font-weight: 500;
+  opacity: 0.75;
+  line-height: 1.4;
+}
+
+/* ── Section Order Chip ── */
+.soc-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(109, 40, 217, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.65rem;
+  cursor: grab;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.12s ease;
+  user-select: none;
+}
+
+.soc-chip:hover {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(109, 40, 217, 0.22);
+  box-shadow: 0 2px 10px rgba(109, 40, 217, 0.1);
+}
+
+.soc-chip:active {
+  cursor: grabbing;
+}
+
+.soc-chip.soc-dragging {
+  opacity: 0.45;
+  transform: scale(0.97);
+  box-shadow: 0 4px 16px rgba(109, 40, 217, 0.2);
+}
+
+.soc-chip.soc-drop-above {
+  border-top: 2.5px solid var(--accent);
+  padding-top: calc(0.5rem - 1.5px);
+}
+
+.soc-chip.soc-drop-below {
+  border-bottom: 2.5px solid var(--accent);
+  padding-bottom: calc(0.5rem - 1.5px);
+}
+
+.soc-grip {
+  color: var(--muted);
+  opacity: 0.4;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+
+.soc-chip:hover .soc-grip {
+  opacity: 0.7;
+}
+
+.soc-icon {
+  color: var(--accent);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+
+.soc-label {
+  flex: 1;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.soc-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.soc-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 4px;
+  color: var(--muted);
+  font-size: 0.55rem;
+  transition: all 0.15s ease;
+  background: transparent;
+}
+
+.soc-arrow:hover:not(:disabled) {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.soc-arrow:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}

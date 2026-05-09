@@ -4,6 +4,18 @@
 
 All components for GitHub profile attribution in the PromptLab prompt library have been successfully implemented.
 
+## Latest Update: Section Reordering & UX Improvements
+
+The Generator now offers a richer, more personalised filling experience:
+
+- **Drag-and-drop section reordering** — the four form sections (*Identity & Foundation*, *Task & Execution Logic*, *Boundaries & Success Policy*, *Delivery & Capabilities*) can be grabbed by a grip handle and dropped into any order. The custom order is persisted in `localStorage` under the key `promptLab_sectionOrder` and restored on every page load.
+- **Collapse / expand** — clicking a section label collapses or expands its fields with a smooth CSS max-height transition.
+- **Completion dots** — a small green dot on each section label turns on as soon as any field in that section has a value, giving an at-a-glance fill progress indicator.
+- **Quick-nav pills** — a compact pill bar at the top of the form jumps to (and auto-expands) any section with a single click.
+- **Reset order** — a ↺ Reset order button appears in the quick-nav when the section order differs from the default, restoring the canonical order.
+
+> The *generated prompt output* order is fixed at the canonical best-practice sequence regardless of the user's form section order.
+
 ## Latest Update: My Prompts
 
 PromptLab now saves user-created prompt work locally in browser IndexedDB:

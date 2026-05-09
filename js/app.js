@@ -22,6 +22,11 @@ import {
   hasValue,
   cleanValue,
 } from "./promptGenerator.js";
+import {
+  getSectionOrder,
+  initSectionUX,
+  updateSectionCompletionDots,
+} from "./sectionOrder.js";
 import { checkBlueprintFormatCompatibility } from "./validators.js";
 import {
   scheduleHarperWarmup,
@@ -75,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(async () => {
         const rawData = Object.fromEntries(new FormData(form));
         const data = normalizePromptData(rawData);
-        const prompt = buildPromptString(data);
+        const prompt = buildPromptString(data, getSectionOrder());
         const summary = buildPromptSummary(data);
 
         showPromptResult(data, prompt, summary);
@@ -90,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("input", () => {
       saveFormState();
       queueWorkingPromptSave();
+      updateSectionCompletionDots();
     });
   }
 
@@ -224,6 +230,9 @@ document.addEventListener("DOMContentLoaded", () => {
   syncFormatUI();
   suppressWorkingPromptSave = false;
   renderMyPrompts();
+
+  // Section UX features (delegated to sectionOrder.js)
+  initSectionUX();
 });
 
 // Load Prompts using Fetch

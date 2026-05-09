@@ -4,9 +4,21 @@
 
 Your PromptLab now has a **complete, production-ready contributor attribution system** with GitHub profile linking.
 
-## Latest App Feature
+## Latest App Feature: Section Reordering & UX
 
-The site now includes a **My Prompts** tab backed by browser IndexedDB. It stores one active working prompt, promotes that same record to generated on Generate Prompt, and keeps timestamped versions locally with actions to reopen prompts in Generator, view version history, deploy past versions, copy prompt text, download Markdown, and delete saved records.
+The Generator form now supports **drag-and-drop section reordering** (native HTML5 Drag-and-Drop API, zero extra dependencies). Each of the four sections — *Identity & Foundation*, *Task & Execution Logic*, *Boundaries & Success Policy*, *Delivery & Capabilities* — has a grip handle, a collapse toggle, a completion dot, and is included in the quick-nav pill bar at the top of the form.
+
+**localStorage keys added:**
+
+| Key | Value | Purpose |
+|---|---|---|
+| `promptLab_sectionOrder` | JSON array of section IDs | Persists user's custom drag order across reloads |
+
+Resetting to the default order clears this key. The generated prompt output order is unaffected by the drag preference.
+
+## Previous App Feature: My Prompts
+
+ It stores one active working prompt, promotes that same record to generated on Generate Prompt, and keeps timestamped versions locally with actions to reopen prompts in Generator, view version history, deploy past versions, copy prompt text, download Markdown, and delete saved records.
 
 Version history shows each entry's change type and timestamp, with a **Deploy** button to restore any past version as the current active prompt. Reset Workspace safely preserves generated prompts — if a generated prompt was reopened as a draft, resetting reverts it to its last generated state instead of deleting it.
 

@@ -4,7 +4,11 @@
 
 All components for GitHub profile attribution in the PromptLab prompt library have been successfully implemented, tested, and documented.
 
-## Latest Deliverable: My Prompts
+## Latest Deliverable: Section Reordering & UX Improvements
+
+The Generator form has been upgraded with full drag-and-drop section reordering, collapse/expand per section, green completion dots, quick-nav pill bar, and a Reset order control. Implementation spans `index.html`, `css/style.css`, and `js/app.js`. Section order is stored in `localStorage` under `promptLab_sectionOrder`.
+
+## Previous Deliverable: My Prompts
 
 The application now has a **My Prompts** tab powered by browser IndexedDB. It autosaves one active working prompt, promotes that same prompt to generated on Generate Prompt, keeps timestamped versions, and provides local reopen/version/copy/download/delete actions. Implementation details are documented in [`MY_PROMPTS_INDEXEDDB.md`](MY_PROMPTS_INDEXEDDB.md).
 

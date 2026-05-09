@@ -2,6 +2,16 @@
 
 > Complete Contributor Attribution System with GitHub Profile Linking
 
+## Recent Addition: Section Reordering & UX Improvements
+
+The Generator form now supports **drag-and-drop section reordering**. The four prompt-building sections — *Identity & Foundation*, *Task & Execution Logic*, *Boundaries & Success Policy*, and *Delivery & Capabilities* — can be freely dragged into any order that suits your workflow. The order is persisted across page reloads via `localStorage` and can be reset at any time. Each section also has:
+
+- **Collapse / expand toggle** — click the section label to hide or show its fields.
+- **Completion dot** — a green dot appears on a section's label as soon as at least one of its fields has content.
+- **Quick-nav pills** — a row of pills at the top of the form lets you jump directly to any section (and auto-expands it if collapsed).
+
+> Note: The *generated prompt output* order is always fixed at the canonical best-practice order regardless of your drag preference.
+
 ## Recent Addition: My Prompts
 
 PromptLab now includes a **My Prompts** tab that stores the current working prompt, generated status, and timestamped versions in browser IndexedDB. See [`MY_PROMPTS_INDEXEDDB.md`](MY_PROMPTS_INDEXEDDB.md) for the implementation notes and privacy behavior.
@@ -423,6 +433,10 @@ Before going live:
 - [x] JSON validated ✓
 - [x] All documentation cross-linked ✓
 - [x] Backward compatibility maintained ✓
+- [x] Section drag-and-drop reordering implemented ✓
+- [x] Section collapse / expand implemented ✓
+- [x] Section completion dots implemented ✓
+- [x] Quick-nav pills implemented ✓
 
 **STATUS: ✅ READY TO LAUNCH!**
 
